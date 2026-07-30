@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { ChangeEvent, CSSProperties, FormEvent, PointerEvent } from "react";
 import {
   ArrowLeft,
@@ -36,10 +36,12 @@ import {
   UserCircle,
   X,
 } from "@phosphor-icons/react";
+import type { DeckSummary, SlideDeck, SummaryState } from "../lib/types";
+import { PRELOADED_DECKS } from "../lib/preloaded-decks";
 
-type Screen = "course" | "library" | "upload" | "pipeline" | "slideReview" | "summaryReview" | "workspace";
+type Screen = "course" | "workspace";
 type ItemKind = "document" | "summary";
-type PipelineStatus = "processing" | "review" | "approved" | "error";
+type PipelineStatus = "ready" | "processing" | "review" | "approved" | "error";
 
 type DocumentRecord = {
   id: string;
@@ -57,6 +59,10 @@ type DocumentRecord = {
   slideReviewNote: string;
   slideChecked: boolean;
   summaryApproved: boolean;
+  deck: SlideDeck;
+  summary: DeckSummary | null;
+  summaryState: SummaryState;
+  retrievalChunks: Array<{ id: string; text: string; slideFrom: number; slideTo?: number }>;
 };
 
 type Day = {
@@ -72,22 +78,56 @@ type Selection = {
   kind: ItemKind;
 };
 
+type TextSelectionContext = {
+  text: string;
+  slideFrom: number;
+  slideTo?: number;
+  rect: { top: number; left: number; width: number; height: number };
+};
+
+type ChatSource = {
+  label: string;
+  slideFrom?: number;
+  slideTo?: number;
+};
+
 type ChatMessage = {
   role: "user" | "assistant";
   text: string;
-  sources?: string[];
+  sources?: ChatSource[];
 };
 
-const DAY_COUNT = 6;
+const DAY_COUNT = 2;
+const PRELOADED_DECK_LIST = Object.values(PRELOADED_DECKS);
 
 function cn(...values: Array<string | false | null | undefined>) {
   return values.filter(Boolean).join(" ");
 }
 
 function createDays(): Day[] {
-  return Array.from({ length: DAY_COUNT }, (_, index) => {
-    const number = String(index + 1).padStart(2, "0");
-    return { id: "day-" + number, label: "Day" + number, documents: [], expanded: index === 0 };
+  return PRELOADED_DECK_LIST.map((deck, index) => {
+    const dayNumber = String(index + 1).padStart(2, "0");
+    const document: DocumentRecord = {
+      id: deck.deckId,
+      fileName: deck.extraction.sourceFile,
+      fileSize: 0,
+      fileType: "Slide được nạp sẵn",
+      status: "ready",
+      stage: "Sẵn sàng học",
+      progress: 100,
+      chunks: deck.chunks.map((chunk) => chunk.text),
+      extractedText: deck.pages.map((page) => page.text).join("\n\n"),
+      summaryDraft: "",
+      summaryNote: "",
+      slideReviewNote: "",
+      slideChecked: false,
+      summaryApproved: false,
+      deck,
+      summary: null,
+      summaryState: { status: "idle" },
+      retrievalChunks: deck.chunks.flatMap((chunk) => chunk.pages.map((page) => ({ id: chunk.chunkId + "-" + page, text: chunk.text, slideFrom: page }))),
+    };
+    return { id: "day-" + dayNumber, label: "Day" + dayNumber, documents: [document], expanded: index === 0 };
   });
 }
 
@@ -100,6 +140,7 @@ function wait(milliseconds: number) {
 }
 
 function formatBytes(bytes: number) {
+  if (!bytes) return "N\u1ea1p s\u1eb5n";
   if (bytes < 1024 * 1024) return Math.max(1, Math.round(bytes / 1024)) + " KB";
   return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
@@ -111,14 +152,6 @@ function chunkText(source: string) {
     for (let offset = 0; offset < paragraph.length; offset += 700) chunks.push(paragraph.slice(offset, offset + 700));
   }
   return chunks;
-}
-
-function retrieveChunks(chunks: string[], query: string) {
-  const terms = query.toLowerCase().split(/\W+/).filter((term) => term.length > 2);
-  return chunks.map((chunk, index) => ({
-    index,
-    score: terms.reduce((score, term) => score + (chunk.toLowerCase().includes(term) ? 1 : 0), 0),
-  })).filter((item) => item.score > 0).sort((left, right) => right.score - left.score).slice(0, 3);
 }
 
 async function readTextLayer(file: File) {
@@ -133,21 +166,21 @@ function FileKindIcon({ fileName, size = 21 }: { fileName: string; size?: number
 }
 
 function statusLabel(document: DocumentRecord) {
+  if (document.status === "ready") return "S\u1eb5n s\u00e0ng";
   if (document.status === "processing") return document.stage;
   if (document.status === "approved") return "Đã lưu";
   if (document.status === "error") return "Cần kiểm tra";
   return "Chờ review";
 }
 
-function MainHeader({ screen, onNavigate, darkMode, onToggleDark }: { screen: Screen; onNavigate: (screen: Screen) => void; darkMode: boolean; onToggleDark: () => void }) {
+function MainHeader({ darkMode, onToggleDark }: { darkMode: boolean; onToggleDark: () => void }) {
   return (
     <header className="main-topbar">
-      <button className="brand" onClick={() => onNavigate("course")} aria-label="Về khóa học của tôi">
+      <span className="brand" aria-label="VLearn">
         <span className="brand-mark"><BookOpen size={19} weight="bold" /></span><span>VLearn</span>
-      </button>
+      </span>
       <nav className="main-nav" aria-label="Điều hướng chính">
-        <button className={cn("main-nav-item", screen === "course" && "is-active")} onClick={() => onNavigate("course")}><BookOpen size={18} weight="bold" /> Khóa học của tôi</button>
-        <button className={cn("main-nav-item", ["library", "upload", "pipeline", "slideReview", "summaryReview"].includes(screen) && "is-active")} onClick={() => onNavigate("library")}><Rows size={18} weight="bold" /> Thư viện</button>
+        <span className="main-nav-item is-active"><BookOpen size={18} weight="bold" /> Khóa học của tôi</span>
       </nav>
       <div className="main-topbar-actions">
         <span className="locale-button">VI</span><button className="icon-button" onClick={onToggleDark} aria-label={darkMode ? "Chế độ sáng" : "Chế độ tối"}>{darkMode ? <Sun size={19} weight="bold" /> : <Moon size={19} />}</button><span className="avatar"><UserCircle size={22} weight="fill" /></span>
@@ -162,7 +195,7 @@ function CourseScreen({ days, onToggleDay, onOpen }: { days: Day[]; onToggleDay:
     <main className="course-page">
       <section className="course-heading">
         <div><p className="eyebrow">VLEARN · KHÓA HỌC CỦA TÔI</p><h1>Khóa học của tôi</h1><p>Chọn một Day để mở học liệu và học cùng Tutor.</p></div>
-        <div className="reading-progress"><CheckCircle size={18} weight="fill" /><span>Đã đọc {populatedDays}/{DAY_COUNT} day</span><i /><strong>{populatedDays ? "—" : "0%"}</strong></div>
+        <div className="reading-progress"><CheckCircle size={18} weight="fill" /><span>Đã đọc {populatedDays}/{DAY_COUNT} day</span><i /><strong>{populatedDays ? "100%" : "0%"}</strong></div>
       </section>
       <section className="course-days">
         <div className="section-intro"><div><p className="eyebrow">LỘ TRÌNH HỌC TẬP</p><h2>Chọn Day để bắt đầu</h2></div><span className="quiet-count">{DAY_COUNT} Day</span></div>
@@ -180,8 +213,76 @@ function CourseDay({ day, onToggle, onOpen }: { day: Day; onToggle: () => void; 
         <span className="day-heading-copy"><strong>{day.label}</strong><small>{day.documents.length ? day.documents.length + " tài liệu" : "Chưa có tài liệu"}</small></span>
         <CaretDown className="day-caret" size={20} />
       </button>
-      {day.expanded && <div className="course-day-content">{day.documents.length === 0 ? <div className="day-empty"><CloudArrowUp size={23} /><span>Day này chưa có tài liệu</span><small>Tài liệu được thêm và xử lý trong Thư viện.</small></div> : day.documents.map((document) => <div className="course-doc-row" key={document.id}><button onClick={() => onOpen({ dayId: day.id, docId: document.id, kind: "document" })}><FileKindIcon fileName={document.fileName} /><span><strong>{document.fileName}</strong><small>{formatBytes(document.fileSize)} · {statusLabel(document)}</small></span><ArrowRight size={18} /></button><button className="course-summary-link" onClick={() => onOpen({ dayId: day.id, docId: document.id, kind: "summary" })}><Sparkle size={16} weight="fill" /><span><strong>Summary</strong><small>{document.summaryApproved ? "Đã lưu" : "Mở Summary"}</small></span><ArrowRight size={16} /></button></div>)}</div>}
+      {day.expanded && <div className="course-day-content">{day.documents.map((document) => <div className="course-doc-row" key={document.id}><button className="course-summary-link" onClick={() => onOpen({ dayId: day.id, docId: document.id, kind: "summary" })}><Sparkle size={16} weight="fill" /><span><strong>Học với Summary</strong><small>{document.summaryState.status === "ready" ? "Bản tóm tắt đã sẵn sàng" : "Tóm tắt có citation slide"}</small></span><ArrowRight size={16} /></button><button onClick={() => onOpen({ dayId: day.id, docId: document.id, kind: "document" })}><FileKindIcon fileName={document.fileName} /><span><strong>Xem toàn bộ slide</strong><small>{document.deck.totalPages} slides · {statusLabel(document)}</small></span><ArrowRight size={18} /></button></div>)}</div>}
     </section>
+  );
+}
+
+const PRELOADED_COPY = {
+  library: "Th\u01b0 vi\u1ec7n",
+  kicker: "VLEARN \u00b7 H\u1eccC LI\u1ec6U N\u1ea0P S\u1eb4N",
+  title: "B\u00e0i gi\u1ea3ng Day 1 & Day 2",
+  description: "Ch\u1ecdn m\u1ed9t Day \u0111\u1ec3 xem slide, t\u00f3m t\u1eaft v\u00e0 h\u1ecfi Tutor.",
+  loaded: "D\u1eef li\u1ec7u \u0111\u00e3 \u0111\u01b0\u1ee3c n\u1ea1p s\u1eb5n cho demo",
+  open: "M\u1edf h\u1ecdc li\u1ec7u",
+  summary: "T\u00f3m t\u1eaft",
+};
+const UNCLASSIFIED_COPY = "Ch\u01b0a ph\u00e2n lo\u1ea1i";
+const SKIPPED_COPY = "Kh\u00f4ng c\u00f3 text \u0111\u1ecdc \u0111\u01b0\u1ee3c \u1edf: ";
+const CLIENT_FALLBACK_MESSAGE = "Hi\u1ec7n t\u1ea1i ch\u1ee9c n\u0103ng h\u1ecfi \u0111\u00e1p \u0111ang g\u1eb7p s\u1ef1 c\u1ed1, mong b\u1ea1n th\u1eed l\u1ea1i sau .";
+const SUMMARY_CACHE_VERSION = "v1";
+
+type CachedSummary = { summary: DeckSummary; partial: boolean };
+
+function summaryCacheKey(deckId: string) {
+  return `vlearn:summary:${SUMMARY_CACHE_VERSION}:${deckId}`;
+}
+
+function readCachedSummary(deckId: string): CachedSummary | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(summaryCacheKey(deckId)) || "null") as Partial<CachedSummary> | null;
+    return parsed?.summary?.deckId === deckId && Array.isArray(parsed.summary.sections) ? { summary: parsed.summary as DeckSummary, partial: parsed.partial === true } : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCachedSummary(deckId: string, value: CachedSummary) {
+  if (typeof window === "undefined") return;
+  try { window.localStorage.setItem(summaryCacheKey(deckId), JSON.stringify(value)); } catch { /* Storage may be unavailable in private mode. */ }
+}
+
+function summaryStateFromCache(cache: CachedSummary): SummaryState {
+  return cache.partial ? { status: "partial", summary: cache.summary, note: "Một số slide có độ tin cậy thấp." } : { status: "ready", summary: cache.summary };
+}
+
+function PreloadedLibraryScreen({ days, onToggleDay, onOpenWorkspace }: { days: Day[]; onToggleDay: (dayId: string) => void; onOpenWorkspace: (selection: Selection) => void }) {
+  const documentCount = days.reduce((total, day) => total + day.documents.length, 0);
+  return (
+    <main className="library-page">
+      <section className="library-hero">
+        <div><p className="eyebrow">{PRELOADED_COPY.kicker}</p><h1>{PRELOADED_COPY.library}</h1><p>{PRELOADED_COPY.description}</p></div>
+        <span className="status-badge is-approved">{PRELOADED_COPY.loaded}</span>
+      </section>
+      <section className="library-body">
+        <div className="library-toolbar"><div><p className="eyebrow">L\u1ed8 TR\u00ccNH H\u1eccC T\u1eacP</p><h2>{documentCount} t\u00e0i li\u1ec7u \u0111\u00e3 n\u1ea1p</h2></div><span className="library-summary-meta">Ch\u1ec9 hi\u1ec3n th\u1ecb Day 1 v\u00e0 Day 2</span></div>
+        <div className="library-day-list">
+          {days.map((day) => (
+            <section className={cn("library-day", day.expanded && "is-expanded")} key={day.id}>
+              <button className="library-day-head" onClick={() => onToggleDay(day.id)} aria-expanded={day.expanded}>
+                <span className="day-number"><small>DAY</small><strong>{day.label.slice(-2)}</strong></span>
+                <span><strong>{day.label}</strong><small>{day.documents.length} t\u00e0i li\u1ec7u</small></span><CaretDown className="day-caret" size={20} />
+              </button>
+              {day.expanded && <div className="library-day-content">{day.documents.map((document) => <div className="library-document" key={document.id}>
+                <button className="library-document-main" onClick={() => onOpenWorkspace({ dayId: day.id, docId: document.id, kind: "document" })}><span className="file-icon"><FileKindIcon fileName={document.fileName} /></span><span><strong>{document.fileName}</strong><small>{document.deck.totalPages} slides \u00b7 {PRELOADED_COPY.loaded}</small></span><ArrowRight size={18} /></button>
+                <div className="library-document-actions"><button className="library-document-primary" onClick={() => onOpenWorkspace({ dayId: day.id, docId: document.id, kind: "document" })}>{PRELOADED_COPY.open}</button><button className="library-document-primary" onClick={() => onOpenWorkspace({ dayId: day.id, docId: document.id, kind: "summary" })}>{PRELOADED_COPY.summary}</button></div>
+              </div>)}</div>}
+            </section>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }
 
@@ -194,6 +295,7 @@ function LibraryScreen({ days, onToggleDay, onUpload, onOpenPipeline, onOpenSlid
   onOpenSummaryReview: (document: DocumentRecord) => void;
   onOpenWorkspace: (selection: Selection) => void;
 }) {
+  return <PreloadedLibraryScreen days={days} onToggleDay={onToggleDay} onOpenWorkspace={onOpenWorkspace} />;
   const documentCount = days.reduce((total, day) => total + day.documents.length, 0);
   const reviewCount = days.reduce((total, day) => total + day.documents.filter((document) => document.status === "review").length, 0);
   const populatedDays = days.filter((day) => day.documents.length > 0);
@@ -299,7 +401,7 @@ function PdfPreview({ file, page = 1, onPageCount }: { file?: File; page?: numbe
 }
 
 /* All-pages scrollable PDF with text layer for selection */
-function PdfAllPagesPreview({ file, onPageCount, onTextSelect, pageRefs }: { file?: File; onPageCount?: (count: number) => void; onTextSelect?: (text: string) => void; pageRefs: React.MutableRefObject<Map<number, HTMLDivElement>> }) {
+function PdfAllPagesPreview({ file, onPageCount, onTextSelect, pageRefs, activeSlide }: { file?: File; onPageCount?: (count: number) => void; onTextSelect?: (selection: TextSelectionContext) => void; pageRefs: React.MutableRefObject<Map<number, HTMLElement>>; activeSlide?: number }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [pages, setPages] = useState<number>(0);
@@ -317,11 +419,10 @@ function PdfAllPagesPreview({ file, onPageCount, onTextSelect, pageRefs }: { fil
         const pdf = await loadingTask.promise;
         if (!active) return;
         const numPages = pdf.numPages;
-        setPages(numPages);
         onPageCount?.(numPages);
         const container = containerRef.current;
         if (!container) return;
-        container.innerHTML = "";
+        container.replaceChildren();
         pageRefs.current.clear();
         const deviceScale = window.devicePixelRatio || 1;
         for (let i = 1; i <= numPages; i++) {
@@ -356,6 +457,7 @@ function PdfAllPagesPreview({ file, onPageCount, onTextSelect, pageRefs }: { fil
             ctx.setTransform(deviceScale, 0, 0, deviceScale, 0, 0);
             await pdfPage.render({ canvas, canvasContext: ctx, viewport }).promise;
           }
+          if (!active) return;
           canvasContainer.appendChild(canvas);
           /* Text layer for selection */
           try {
@@ -364,28 +466,16 @@ function PdfAllPagesPreview({ file, onPageCount, onTextSelect, pageRefs }: { fil
             textLayerDiv.className = "pdf-text-layer";
             textLayerDiv.style.width = viewport.width + "px";
             textLayerDiv.style.height = viewport.height + "px";
-            for (const item of textContent.items) {
-              if (!("str" in item) || !item.str) continue;
-              const tx = item.transform;
-              const span = window.document.createElement("span");
-              span.textContent = item.str;
-              const fontSize = Math.sqrt(tx[0] * tx[0] + tx[1] * tx[1]);
-              span.style.fontSize = fontSize + "px";
-              span.style.fontFamily = "sans-serif";
-              span.style.position = "absolute";
-              span.style.left = tx[4] + "px";
-              span.style.top = (viewport.height - tx[5] - fontSize) + "px";
-              span.style.transformOrigin = "0% 0%";
-              if (item.width) span.style.width = item.width + "px";
-              span.style.height = fontSize * 1.2 + "px";
-              textLayerDiv.appendChild(span);
-            }
+            const textLayer = new pdfjs.TextLayer({ textContentSource: textContent, container: textLayerDiv, viewport });
+            await textLayer.render();
+            if (!active) return;
             canvasContainer.appendChild(textLayerDiv);
           } catch { /* text layer optional */ }
+          if (!active) return;
           pageWrapper.appendChild(canvasContainer);
           container.appendChild(pageWrapper);
         }
-        if (active) setStatus("idle");
+        if (active) { setPages(numPages); setStatus("idle"); }
       } catch {
         if (active) setStatus("error");
       }
@@ -393,18 +483,40 @@ function PdfAllPagesPreview({ file, onPageCount, onTextSelect, pageRefs }: { fil
     void renderAllPages();
     return () => {
       active = false;
+      containerRef.current?.replaceChildren();
+      pageRefs.current.clear();
       if (loadingTask) void loadingTask.destroy();
     };
   }, [file, onPageCount, pageRefs]);
 
-  /* Listen for text selection */
+  useEffect(() => {
+    for (const [page, element] of pageRefs.current) element.classList.toggle("is-selection-target", page === activeSlide);
+  }, [activeSlide, pages, pageRefs]);
+
+  /* Listen for text selection and resolve the actual page from the selection range. */
   useEffect(() => {
     const container = containerRef.current;
     if (!container || !onTextSelect) return;
     function handleMouseUp() {
       const sel = window.getSelection();
       const text = sel?.toString().trim();
-      if (text && text.length > 0) onTextSelect!(text);
+      if (!sel || !text || !sel.rangeCount) return;
+      const range = sel.getRangeAt(0);
+      const pageFromNode = (node: Node | null) => {
+        const element = node instanceof Element ? node : node?.parentElement;
+        const page = element?.closest<HTMLElement>("[data-page]")?.dataset.page;
+        return page ? Number(page) : 0;
+      };
+      const startPage = pageFromNode(range.startContainer);
+      const endPage = pageFromNode(range.endContainer);
+      if (!startPage || !endPage) return;
+      const rect = range.getBoundingClientRect();
+      onTextSelect!({
+        text,
+        slideFrom: Math.min(startPage, endPage),
+        slideTo: startPage === endPage ? undefined : Math.max(startPage, endPage),
+        rect: { top: rect.top, left: rect.left, width: rect.width, height: rect.height },
+      });
     }
     container.addEventListener("mouseup", handleMouseUp);
     return () => container.removeEventListener("mouseup", handleMouseUp);
@@ -415,43 +527,204 @@ function PdfAllPagesPreview({ file, onPageCount, onTextSelect, pageRefs }: { fil
 }
 
 /* Selection tooltip that appears near selected text */
-function SelectionTooltip({ text, onAskTutor, onDismiss }: { text: string; onAskTutor: (text: string) => void; onDismiss: () => void }) {
-  if (!text) return null;
-  return <div className="selection-tooltip-overlay" onClick={onDismiss}><div className="selection-tooltip" onClick={(e) => e.stopPropagation()}><div className="selection-tooltip-preview"><span>"{text.length > 80 ? text.slice(0, 80) + "…" : text}"</span></div><button className="selection-tooltip-action" onClick={() => onAskTutor(text)}><ChatText size={16} weight="bold" /> Hỏi Tutor</button></div></div>;
+function SelectionTooltip({ selection, onAskTutor }: { selection: TextSelectionContext; onAskTutor: (selection: TextSelectionContext) => void }) {
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ left: 12, top: 12 });
+  const viewportWidth = typeof window === "undefined" ? 1200 : window.innerWidth;
+  const viewportHeight = typeof window === "undefined" ? 800 : window.innerHeight;
+  useLayoutEffect(() => {
+    const tooltip = tooltipRef.current;
+    if (!tooltip) return;
+    const gap = 10;
+    const width = tooltip.offsetWidth;
+    const height = tooltip.offsetHeight;
+    const left = Math.min(Math.max(12, selection.rect.left), Math.max(12, viewportWidth - width - 12));
+    const above = selection.rect.top - height - gap;
+    const below = selection.rect.top + selection.rect.height + gap;
+    const top = above >= 12 ? above : Math.min(Math.max(12, below), Math.max(12, viewportHeight - height - 12));
+    setPosition({ left, top });
+  }, [selection, viewportHeight, viewportWidth]);
+  if (!selection.text) return null;
+  const label = selection.slideTo ? `Slide ${selection.slideFrom}-${selection.slideTo}` : `Slide ${selection.slideFrom}`;
+  return <div className="selection-tooltip-overlay"><div ref={tooltipRef} className="selection-tooltip" style={position} onClick={(event) => event.stopPropagation()}><div className="selection-tooltip-preview"><span className="selection-tooltip-slide">{label}</span><span>"{selection.text.length > 80 ? selection.text.slice(0, 80) + "…" : selection.text}"</span></div><button className="selection-tooltip-action" onClick={() => onAskTutor(selection)}><ChatText size={16} weight="bold" /> Hỏi Tutor</button></div></div>;
+}
+
+function FixedSlideDeckPreview({ deck, onPageCount, onTextSelect, pageRefs, activeSlide }: { deck: SlideDeck; onPageCount?: (count: number) => void; onTextSelect?: (selection: TextSelectionContext) => void; pageRefs: React.MutableRefObject<Map<number, HTMLElement>>; activeSlide?: number }) {
+  const [failedImages, setFailedImages] = useState<Record<number, boolean>>({});
+  const stackRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { onPageCount?.(deck.totalPages); }, [deck.totalPages, onPageCount]);
+  function clearHighlightedSpans() {
+    stackRef.current?.querySelectorAll(".fixed-slide-select-span.is-text-selected").forEach((span) => span.classList.remove("is-text-selected"));
+  }
+  useEffect(() => {
+    function syncHighlightedSpans() {
+      const selection = window.getSelection();
+      const range = selection?.rangeCount ? selection.getRangeAt(0) : null;
+      if (!range || !stackRef.current?.contains(range.commonAncestorContainer)) {
+        clearHighlightedSpans();
+        return;
+      }
+      stackRef.current.querySelectorAll<HTMLElement>(".fixed-slide-select-span").forEach((span) => span.classList.toggle("is-text-selected", range.intersectsNode(span)));
+    }
+    document.addEventListener("selectionchange", syncHighlightedSpans);
+    return () => document.removeEventListener("selectionchange", syncHighlightedSpans);
+  }, []);
+  function handleMouseUp() {
+    if (!onTextSelect) return;
+    const selection = window.getSelection();
+    const text = selection?.toString().trim();
+    if (!selection || !text || !selection.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    const pageFromNode = (node: Node | null) => {
+      const element = node instanceof Element ? node : node?.parentElement;
+      const page = element?.closest<HTMLElement>("[data-page]")?.dataset.page;
+      return page ? Number(page) : 0;
+    };
+    const startPage = pageFromNode(range.startContainer);
+    const endPage = pageFromNode(range.endContainer);
+    if (!startPage || !endPage) return;
+    const spanRects = Array.from(stackRef.current?.querySelectorAll<HTMLElement>(".fixed-slide-select-span") ?? [])
+      .filter((span) => range.intersectsNode(span))
+      .map((span) => span.getBoundingClientRect());
+    const rect = spanRects.length ? {
+      left: Math.min(...spanRects.map((item) => item.left)),
+      top: Math.min(...spanRects.map((item) => item.top)),
+      right: Math.max(...spanRects.map((item) => item.right)),
+      bottom: Math.max(...spanRects.map((item) => item.bottom)),
+      get width() { return this.right - this.left; },
+      get height() { return this.bottom - this.top; },
+    } : range.getBoundingClientRect();
+    onTextSelect({ text, slideFrom: Math.min(startPage, endPage), slideTo: startPage === endPage ? undefined : Math.max(startPage, endPage), rect: { top: rect.top, left: rect.left, width: rect.width, height: rect.height } });
+  }
+  function imagePath(page: number) {
+    return `${deck.imageBasePath}/p${String(page).padStart(2, "0")}.png`;
+  }
+  return <div className="fixed-slide-stack" ref={stackRef} onMouseUp={handleMouseUp}>{deck.pages.map((page) => {
+    return <article className={cn("fixed-slide-page", page.page === activeSlide && "is-selection-target")} data-page={page.page} key={page.page} ref={(element) => { if (element) pageRefs.current.set(page.page, element); else pageRefs.current.delete(page.page); }}>
+      <div className="fixed-slide-label"><span>Slide {String(page.page).padStart(2, "0")}</span><span>{deck.title}</span></div>
+      <div className="fixed-slide-canvas">
+        {!failedImages[page.page] && <img className="fixed-slide-image" src={imagePath(page.page)} alt={`Slide ${page.page} - ${deck.title}`} onError={() => setFailedImages((current) => ({ ...current, [page.page]: true }))} />}
+        {failedImages[page.page] ? <div className="fixed-slide-text">{page.text.split("\n").map((line, index) => <p key={index}>{line || "\u00a0"}</p>)}</div> : <div className="fixed-slide-select-layer" aria-label={`Text layer của slide ${page.page}`}>{page.textSpans?.map((span, index) => <span className="fixed-slide-select-span" key={`${span.text}-${index}`} style={{ left: `${span.x * 100}%`, top: `${span.y * 100}%`, width: `${span.width * 100}%`, height: `${span.height * 100}%` }}>{span.text}</span>)}</div>}
+      </div>
+    </article>;
+  })}</div>;
+}
+
+const SUMMARY_COPY = {
+  idleTitle: "T\u00f3m t\u1eaft to\u00e0n b\u1ed9",
+  idleText: "Gemini s\u1ebd ch\u1ea1y Map \u2192 Reduce tr\u00ean text slide v\u00e0 tr\u1ea3 v\u1ec1 citation c\u00f3 th\u1ec3 b\u1ea5m.",
+  idleButton: "T\u00f3m t\u1eaft to\u00e0n b\u1ed9",
+  loading: "\u0110ang t\u1ea1o t\u00f3m t\u1eaft",
+  loadingText: "\u0110ang x\u1eed l\u00fd t\u1eebng nh\u00f3m slide, vui l\u00f2ng ch\u1edd trong gi\u00e2y l\u00e1t.",
+  error: "Kh\u00f4ng th\u1ec3 t\u1ea1o t\u00f3m t\u1eaft",
+  retry: "Th\u1eed l\u1ea1i",
+  partial: "Một số slide ít text; hãy mở citation để đối chiếu slide gốc.",
+};
+
+function FixedSummarySurface({ document, onGenerateSummary, onJumpToSlide }: { document: DocumentRecord; onGenerateSummary: () => void; onJumpToSlide?: (slide: number) => void }) {
+  const state = document.summaryState;
+  if (state.status === "idle") return <div className="fixed-summary-empty"><Sparkle size={34} weight="fill" /><h2>{SUMMARY_COPY.idleTitle} {document.deck.title}</h2><p>{SUMMARY_COPY.idleText}</p><button className="primary-button" onClick={onGenerateSummary}><Sparkle size={17} weight="fill" /> {SUMMARY_COPY.idleButton}</button></div>;
+  if (state.status === "loading") return <div className="fixed-summary-empty"><CircleNotch size={28} className="spin" /><h2>{SUMMARY_COPY.loading}</h2><p>{SUMMARY_COPY.loadingText}</p></div>;
+  if (state.status === "error") return <div className="fixed-summary-empty"><Info size={32} /><h2>{SUMMARY_COPY.error}</h2><p>{state.message}</p><button className="secondary-button" onClick={onGenerateSummary}>{SUMMARY_COPY.retry}</button></div>;
+
+  const summary = state.summary;
+  const jumpToSlide = onJumpToSlide ?? ((page: number) => window.dispatchEvent(new CustomEvent("vlearn-jump-slide", { detail: page })));
+  const citation = (page: number) => <button className="summary-citation" onClick={() => jumpToSlide(page)}>[Slide {String(page).padStart(2, "0")}]</button>;
+  return <div className="fixed-summary"><div className="fixed-summary-head"><div><p className="eyebrow">SUMMARY · {document.deck.deckId.toUpperCase()}</p><h2>{document.deck.title}</h2></div><span className={cn("status-badge", state.status === "partial" && "status-review")}>{state.status === "partial" ? "Low-confidence" : "Gemini ready"}</span></div>{summary.sections.map((section) => <section className="fixed-summary-section" key={section.id}><h3>{section.heading}</h3>{section.points.map((point) => <div className="fixed-summary-point" key={point.id}><p>{point.text}</p><div className="summary-citations">{point.pages.map((page) => <span key={page}>{citation(page)}</span>)}{point.confidence === "low" && <span className="summary-low-label">Low confidence</span>}</div></div>)}</section>)}{summary.unclassified.length > 0 && <section className="fixed-summary-section"><h3>{UNCLASSIFIED_COPY}</h3>{summary.unclassified.map((point) => <div className="fixed-summary-point" key={point.id}><p>{point.text}</p><div className="summary-citations">{point.pages.map((page) => <span key={page}>{citation(page)}</span>)}</div></div>)}</section>}<small className="summary-generated">Model: {summary.model} · {new Date(summary.generatedAt).toLocaleString("vi-VN")}</small></div>;
+}
+
+function LegacyFixedSummarySurface({ document, onGenerateSummary, onJumpToSlide }: { document: DocumentRecord; onGenerateSummary: () => void; onJumpToSlide?: (slide: number) => void }) {
+  const state = document.summaryState;
+  if (state.status === "idle") return <div className="fixed-summary-empty"><Sparkle size={34} weight="fill" /><h2>T\u00f3m t\u1eaft to\u00e0n b\u1ed9 {document.deck.title}</h2><p>Gemini s\u1ebd ch\u1ea1y Map \u2192 Reduce tr\u00ean text slide v\u00e0 tr\u1ea3 v\u1ec1 citation c\u00f3 th\u1ec3 b\u1ea5m.</p><button className="primary-button" onClick={onGenerateSummary}><Sparkle size={17} weight="fill" /> T\u00f3m t\u1eaft to\u00e0n b\u1ed9</button></div>;
+  if (state.status === "loading") return <div className="fixed-summary-empty"><CircleNotch size={28} className="spin" /><h2>{state.stage}</h2><p>\u0110ang x\u1eed l\u00fd t\u1eebng nh\u00f3m slide, vui l\u00f2ng ch\u1edd trong gi\u00e2y l\u00e1t.</p></div>;
+  if (state.status === "error") return <div className="fixed-summary-empty"><Info size={32} /><h2>Kh\u00f4ng th\u1ec3 t\u1ea1o t\u00f3m t\u1eaft</h2><p>{state.message}</p><button className="secondary-button" onClick={onGenerateSummary}>Th\u1eed l\u1ea1i</button></div>;
+
+  const summary = state.summary;
+  const jumpToSlide = onJumpToSlide ?? ((page: number) => window.dispatchEvent(new CustomEvent("vlearn-jump-slide", { detail: page })));
+  const citation = (page: number) => <button className="summary-citation" onClick={() => jumpToSlide(page)}>[Slide {String(page).padStart(2, "0")}]</button>;
+  return <div className="fixed-summary"><div className="fixed-summary-head"><div><p className="eyebrow">SUMMARY · {document.deck.deckId.toUpperCase()}</p><h2>{document.deck.title}</h2></div><span className={cn("status-badge", state.status === "partial" && "status-review")}>{state.status === "partial" ? "Low-confidence" : "Gemini ready"}</span></div>{state.status === "partial" && <div className="fixed-summary-alert"><Info size={17} /> Một số slide ít text; hãy mở citation để đối chiếu slide gốc.</div>}{summary.sections.map((section) => <section className="fixed-summary-section" key={section.id}><h3>{section.heading}</h3>{section.points.map((point) => <div className="fixed-summary-point" key={point.id}><p>{point.text}</p><div className="summary-citations">{point.pages.map((page) => <span key={page}>{citation(page)}</span>)}{point.confidence === "low" && <span className="summary-low-label">Low confidence</span>}</div></div>)}</section>)}{summary.unclassified.length > 0 && <section className="fixed-summary-section"><h3>{UNCLASSIFIED_COPY}</h3>{summary.unclassified.map((point) => <div className="fixed-summary-point" key={point.id}><p>{point.text}</p><div className="summary-citations">{point.pages.map((page) => <span key={page}>{citation(page)}</span>)}</div></div>)}</section>}{summary.skippedPages.length > 0 && <div className="fixed-summary-alert"><Info size={17} /> {SKIPPED_COPY}{summary.skippedPages.map((page) => citation(page))}</div>}<small className="summary-generated">Model: {summary.model} · {new Date(summary.generatedAt).toLocaleString("vi-VN")}</small></div>;
 }
 
 function SummarySurface({ document, onOpenReview }: { document: DocumentRecord; onOpenReview: () => void }) {
   return <div className="summary-surface"><div className="summary-surface-head"><div><p className="eyebrow">SUMMARY</p><h2>{document.fileName}</h2></div><span className={cn("status-badge", document.summaryApproved && "is-approved")}>{document.summaryApproved ? "Đã lưu" : "Draft"}</span></div><div className="summary-source"><Info size={17} /><span>{document.summaryDraft || "Summary chưa được sinh từ text layer."}</span></div><div className="summary-read-copy">{document.summaryNote || "Mở màn Review summary để chỉnh sửa và validate nội dung trước khi upsert."}</div><button className="secondary-button" onClick={onOpenReview}><Sparkle size={17} weight="fill" /> Mở Review summary</button></div>;
 }
 
-function DocumentSurface({ document, summarySelected, onOpenReview, page, totalPages, onPageCount, onTextSelect, pageRefs }: { document: DocumentRecord | null; summarySelected: boolean; onOpenReview: () => void; page: number; totalPages: number; onPageCount?: (count: number) => void; onTextSelect?: (text: string) => void; pageRefs: React.MutableRefObject<Map<number, HTMLDivElement>> }) {
+function DocumentSurface({ document, summarySelected, onOpenReview, onGenerateSummary, onJumpToSlide, page, totalPages, onPageCount, onTextSelect, pageRefs, activeSlide }: { document: DocumentRecord | null; summarySelected: boolean; onOpenReview: () => void; onGenerateSummary?: () => void; onJumpToSlide?: (slide: number) => void; page: number; totalPages: number; onPageCount?: (count: number) => void; onTextSelect?: (selection: TextSelectionContext) => void; pageRefs: React.MutableRefObject<Map<number, HTMLElement>>; activeSlide?: number }) {
   if (!document) return <div className="workspace-empty"><BookOpen size={42} /><h2>Chọn một học liệu</h2><p>Chọn Day, tài liệu hoặc Summary ở bên trái để bắt đầu.</p></div>;
-  return summarySelected ? <SummarySurface document={document} onOpenReview={onOpenReview} /> : <div className="document-page document-page-all"><div className="document-page-meta"><span>{totalPages ? `${totalPages} trang` : "Đang tải..."}</span><span>{document.fileName}</span></div><PdfAllPagesPreview file={document.file} onPageCount={onPageCount} onTextSelect={onTextSelect} pageRefs={pageRefs} /></div>;
+  const requestSummary = onGenerateSummary ?? (() => window.dispatchEvent(new CustomEvent("vlearn-generate-summary", { detail: document.id })));
+  return summarySelected ? <FixedSummarySurface document={document} onGenerateSummary={requestSummary} onJumpToSlide={onJumpToSlide} /> : <div className="document-page document-page-all"><div className="document-page-meta"><span>{totalPages ? `${totalPages} slides` : "Loading slides..."}</span><span>{document.fileName}</span></div><FixedSlideDeckPreview deck={document.deck} onPageCount={onPageCount} onTextSelect={onTextSelect} pageRefs={pageRefs} activeSlide={activeSlide} /></div>;
 }
 
-function TutorPanel({ document, onCollapse, prefillQuestion, onClearPrefill }: { document: DocumentRecord | null; onCollapse: () => void; prefillQuestion?: string; onClearPrefill?: () => void }) {
+function TutorAnswer({ text }: { text: string }) {
+  const displayText = text
+    .replace(/\[\s*slide\s+\d+(?:\s*[-\u2013]\s*\d+)?\s*\]/gi, "")
+    .replace(/\*\*/g, "")
+    .replace(/(^|\n)\s*[*-]\s+/g, "$1• ")
+    .replace(/[ \t]{2,}/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+  return <p className="chat-answer">{displayText}</p>;
+}
+
+function LegacyTutorPanel({ document, onCollapse, slideContext, onClearSlideContext, onJumpToSlide }: { document: DocumentRecord | null; onCollapse: () => void; slideContext?: TextSelectionContext; onClearSlideContext: () => void; onJumpToSlide: (slide: number) => void }) {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [loading, setLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
-  /* Prefill from text selection */
-  useEffect(() => {
-    if (prefillQuestion) {
-      setQuestion(prefillQuestion);
-      onClearPrefill?.();
-    }
-  }, [prefillQuestion, onClearPrefill]);
   /* Auto-scroll chat */
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
-  function submitQuestion(event: FormEvent<HTMLFormElement>) {
+  async function submitQuestion(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const trimmed = question.trim();
+    const trimmed = question.trim() || (slideContext ? "Hãy giải thích nội dung được chọn." : "");
     if (!trimmed || !document) return;
-    const matches = retrieveChunks(document.chunks, trimmed);
-    const response = matches.length ? "Đã truy xuất " + matches.length + " chunk liên quan từ text layer. Đây là retrieval proof, chưa phải câu trả lời LLM." : "Chưa tìm thấy text layer phù hợp. PDF/PPTX cần parser/OCR trước khi Tutor trả lời theo nội dung thật.";
-    setMessages((current) => [...current, { role: "user", text: trimmed }, { role: "assistant", text: response, sources: matches.map((match) => "Chunk " + String(match.index + 1).padStart(2, "0")) }]);
+    const context = slideContext ? { slideFrom: slideContext.slideFrom, slideTo: slideContext.slideTo, selectedText: slideContext.text } : undefined;
+    setMessages((current) => [...current, { role: "user", text: trimmed }]);
     setQuestion("");
+    setLoading(true);
+    try {
+      const history = messages.slice(-4).map((message) => ({ role: message.role, text: message.text.slice(0, 1800), sources: message.sources }));
+      const response = await fetch("/api/tutor", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ documentId: document.id, question: trimmed, context, history }) });
+      const data = await response.json().catch(() => null) as { answer?: string; sources?: ChatSource[] } | null;
+      setMessages((current) => [...current, { role: "assistant", text: data?.answer || "Hiện tại chức năng hỏi đáp đang gặp sự cố, mong bạn thử lại sau .", sources: data?.sources || [] }]);
+    } catch {
+      setMessages((current) => [...current, { role: "assistant", text: "Hiện tại chức năng hỏi đáp đang gặp sự cố, mong bạn thử lại sau ." }]);
+    } finally {
+      onClearSlideContext();
+      setLoading(false);
+    }
   }
-  return <aside className="tutor-panel"><div className="tutor-panel-head"><span className="tutor-avatar"><Robot size={20} weight="duotone" /></span><div><strong>VLearn Tutor</strong><small>Hỏi về học liệu đang mở</small></div><span className="tutor-live"><i /> Sẵn sàng</span><button className="panel-collapse-button" onClick={onCollapse} aria-label="Thu gọn VLearn Tutor"><CaretRight size={17} /></button></div><div className="chat-messages">{messages.length === 0 ? <div className="chat-empty"><Robot size={26} /><p>Hỏi một câu về tài liệu.</p><small>Nguồn trả về sẽ hiển thị theo thứ tự retrieval.</small></div> : messages.map((message, index) => <div className={cn("chat-message", message.role)} key={message.role + "-" + index}><p>{message.text}</p>{message.sources && <div className="chat-sources">{message.sources.map((source) => <button key={source}>{source}<ArrowRight size={13} /></button>)}</div>}</div>)}<div ref={chatEndRef} /></div><form className="chat-form" onSubmit={submitQuestion}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="Nhập câu hỏi về tài liệu..." disabled={!document} /><button type="submit" aria-label="Gửi"><ArrowRight size={18} weight="bold" /></button></form></aside>;
+  return <aside className="tutor-panel"><div className="tutor-panel-head"><span className="tutor-avatar"><Robot size={20} weight="duotone" /></span><div><strong>VLearn Tutor</strong><small>Hỏi về học liệu đang mở</small></div><span className="tutor-live"><i /> {loading ? "Đang xử lý" : "Sẵn sàng"}</span><button className="panel-collapse-button" onClick={onCollapse} aria-label="Thu gọn VLearn Tutor"><CaretRight size={17} /></button></div>{slideContext && <div className="tutor-context-chip"><span><strong>{slideContext.slideTo ? `Slide ${slideContext.slideFrom}–${slideContext.slideTo}` : `Slide ${slideContext.slideFrom}`}</strong> · {slideContext.text.slice(0, 90)}{slideContext.text.length > 90 ? "…" : ""}</span><button type="button" onClick={onClearSlideContext} aria-label="Bỏ slide context"><X size={14} /></button></div>}<div className="chat-messages">{messages.length === 0 ? <div className="chat-empty"><Robot size={26} /><p>Hỏi một câu về tài liệu.</p><small>Nguồn trả về sẽ hiển thị theo thứ tự retrieval.</small></div> : messages.map((message, index) => <div className={cn("chat-message", message.role)} key={message.role + "-" + index}><p>{message.text}</p>{message.sources && message.sources.length > 0 && <div className="chat-sources">{message.sources.map((source) => <button key={source.label} onClick={() => source.slideFrom && onJumpToSlide(source.slideFrom)} disabled={!source.slideFrom}>{source.label}<ArrowRight size={13} /></button>)}</div>}</div>)}{loading && <div className="chat-message assistant"><p>Đang tìm trong học liệu và hỏi Tutor…</p></div>}<div ref={chatEndRef} /></div><form className="chat-form" onSubmit={submitQuestion}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={slideContext ? "Nhập câu hỏi cho đoạn slide đã chọn..." : "Nhập câu hỏi về tài liệu..."} disabled={!document || loading} /><button type="submit" aria-label="Gửi" disabled={!document || loading}><ArrowRight size={18} weight="bold" /></button></form></aside>;
+}
+
+function TutorPanel({ document, onCollapse, slideContext, onClearSlideContext, onJumpToSlide }: { document: DocumentRecord | null; onCollapse: () => void; slideContext?: TextSelectionContext; onClearSlideContext: () => void; onJumpToSlide: (slide: number) => void }) {
+  const [question, setQuestion] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [loading, setLoading] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+
+  async function submitQuestion(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const trimmed = question.trim() || (slideContext ? "Hãy giải thích nội dung được chọn." : "");
+    if (!trimmed || !document) return;
+    const context = slideContext ? { slideFrom: slideContext.slideFrom, slideTo: slideContext.slideTo, selectedText: slideContext.text } : undefined;
+    setMessages((current) => [...current, { role: "user", text: trimmed }]);
+    setQuestion("");
+    setLoading(true);
+    try {
+      const history = messages.slice(-4).map((message) => ({ role: message.role, text: message.text.slice(0, 1800), sources: message.sources }));
+      const response = await fetch("/api/tutor", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ documentId: document.id, question: trimmed, context, history }) });
+      const data = await response.json().catch(() => null) as { answer?: string; sources?: ChatSource[] } | null;
+      setMessages((current) => [...current, { role: "assistant", text: data?.answer || CLIENT_FALLBACK_MESSAGE, sources: data?.sources || [] }]);
+    } catch {
+      setMessages((current) => [...current, { role: "assistant", text: CLIENT_FALLBACK_MESSAGE }]);
+    } finally {
+      onClearSlideContext();
+      setLoading(false);
+    }
+  }
+
+  return <aside className="tutor-panel"><div className="tutor-panel-head"><span className="tutor-avatar"><Robot size={20} weight="duotone" /></span><div><strong>VLearn Tutor</strong><small>Hỏi về học liệu đang mở</small></div><span className="tutor-live"><i /> {loading ? "Đang xử lý" : "Sẵn sàng"}</span><button className="panel-collapse-button" onClick={onCollapse} aria-label="Thu gọn VLearn Tutor"><CaretRight size={17} /></button></div>{slideContext && <div className="tutor-context-chip"><span><strong>{slideContext.slideTo ? `Slide ${slideContext.slideFrom}–${slideContext.slideTo}` : `Slide ${slideContext.slideFrom}`}</strong> · {slideContext.text.slice(0, 90)}{slideContext.text.length > 90 ? "…" : ""}</span><button type="button" onClick={onClearSlideContext} aria-label="Bỏ slide context"><X size={14} /></button></div>}<div className="chat-messages">{messages.length === 0 ? <div className="chat-empty"><Robot size={26} /><p>Hỏi một câu về tài liệu.</p><small>Nguồn trả về sẽ hiển thị theo thứ tự citation.</small></div> : messages.map((message, index) => <div className={cn("chat-message", message.role)} key={message.role + "-" + index}><TutorAnswer text={message.text} />{message.sources && message.sources.length > 0 && <div className="chat-sources"><span className="chat-sources-label">Slides liên quan</span>{message.sources.map((source) => <button type="button" key={source.label} onClick={() => source.slideFrom && onJumpToSlide(source.slideFrom)} disabled={!source.slideFrom}>{source.label}<ArrowRight size={13} /></button>)}</div>}</div>)}{loading && <div className="chat-message assistant"><p>Đang tìm trong học liệu và hỏi Tutor…</p></div>}<div ref={chatEndRef} /></div><form className="chat-form" onSubmit={submitQuestion}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={slideContext ? "Nhập câu hỏi cho đoạn slide đã chọn..." : "Nhập câu hỏi về tài liệu..."} disabled={!document || loading} /><button type="submit" aria-label="Gửi" disabled={!document || loading}><ArrowRight size={18} weight="bold" /></button></form></aside>;
 }
 
 function TutorCollapsedRail({ onExpand }: { onExpand: () => void }) {
@@ -459,18 +732,20 @@ function TutorCollapsedRail({ onExpand }: { onExpand: () => void }) {
 }
 
 function ViewerToolbar({ label, page, totalPages, onPrevious, onNext, onCollapse }: { label: string; page: number; totalPages: number; onPrevious: () => void; onNext: () => void; onCollapse: () => void }) {
-  return <div className="viewer-toolbar"><div className="viewer-tools"><button className="tool-button is-active"><BookOpen size={16} /> {label}</button><button className="tool-button"><Pen size={16} /> Bút</button><button className="tool-button"><Highlighter size={16} /> Highlight</button><button className="tool-button icon-only"><DotsThree size={19} weight="bold" /></button></div><span className="toolbar-divider" /><span className="page-note">{totalPages ? `Trang ${page} / ${totalPages}` : "Đang xác định số trang"}</span><div className="zoom-tools"><button className="mini-tool">−</button><strong>100%</strong><button className="mini-tool">＋</button><button className="mini-tool"><DownloadSimple size={17} /></button><button className="panel-collapse-button" onClick={onCollapse} aria-label="Thu gọn vùng xem"><CaretLeft size={17} /></button></div></div>;
+  const unavailable = () => window.alert("Chức năng này chưa nằm trong phạm vi demo.");
+  return <div className="viewer-toolbar"><div className="viewer-tools"><button className="tool-button is-active"><BookOpen size={16} /> {label}</button><button className="tool-button" onClick={unavailable}><Pen size={16} /> Bút</button><button className="tool-button" onClick={unavailable}><Highlighter size={16} /> Highlight</button><button className="tool-button icon-only" onClick={unavailable} aria-label="Thao tác khác"><DotsThree size={19} weight="bold" /></button></div><span className="toolbar-divider" /><span className="page-note">{totalPages ? `Trang ${page} / ${totalPages}` : "Đang xác định số trang"}</span><div className="zoom-tools"><button className="mini-tool" onClick={unavailable}>−</button><strong>100%</strong><button className="mini-tool" onClick={unavailable}>＋</button><button className="mini-tool" onClick={unavailable} aria-label="Tải xuống"><DownloadSimple size={17} /></button><button className="panel-collapse-button" onClick={onCollapse} aria-label="Thu gọn vùng xem"><CaretLeft size={17} /></button></div></div>;
 }
 
 function ViewerFooter({ page, totalPages, onPrevious, onNext }: { page: number; totalPages: number; onPrevious: () => void; onNext: () => void }) {
   return <div className="viewer-footer"><button className="mini-tool" onClick={onPrevious} disabled={page <= 1}><CaretLeft size={18} /></button><span>Trang <strong>{page}</strong>{totalPages ? ` / ${totalPages}` : ""}</span><button className="mini-tool" onClick={onNext} disabled={!totalPages || page >= totalPages}><CaretRight size={18} /></button></div>;
 }
 
-function SummaryPane({ document, onOpenReview, onCollapse }: { document: DocumentRecord | null; onOpenReview: () => void; onCollapse: () => void }) {
-  return <section className="content-pane summary-pane"><div className="summary-pane-head"><div><span className="summary-pane-kicker"><Sparkle size={15} weight="fill" /> Summary</span><small>{document?.summaryApproved ? "Đã approve và lưu" : "Draft cần review"}</small></div><button className="panel-collapse-button" onClick={onCollapse} aria-label="Thu gọn Summary"><CaretRight size={17} /></button></div><div className="summary-pane-scroll">{document ? <SummarySurface document={document} onOpenReview={onOpenReview} /> : <div className="workspace-empty"><Sparkle size={32} /><h2>Chưa có Summary</h2><p>Chọn tài liệu ở cột Học liệu để xem Summary.</p></div>}</div></section>;
+function SummaryPane({ document, onOpenReview: _onOpenReview, onGenerateSummary, onJumpToSlide, onCollapse }: { document: DocumentRecord | null; onOpenReview: () => void; onGenerateSummary?: () => void; onJumpToSlide?: (slide: number) => void; onCollapse: () => void }) {
+  const requestSummary = document ? onGenerateSummary ?? (() => window.dispatchEvent(new CustomEvent("vlearn-generate-summary", { detail: document.id }))): undefined;
+  return <section className="content-pane summary-pane"><div className="summary-pane-head"><div><span className="summary-pane-kicker"><Sparkle size={15} weight="fill" /> Summary</span><small>{document?.summaryState.status === "ready" ? "Gemini ready" : "Cần tạo summary"}</small></div><button className="panel-collapse-button" onClick={onCollapse} aria-label="Thu gọn Summary"><CaretRight size={17} /></button></div><div className="summary-pane-scroll">{document && requestSummary ? <FixedSummarySurface document={document} onGenerateSummary={requestSummary} onJumpToSlide={onJumpToSlide} /> : <div className="workspace-empty"><Sparkle size={32} /><h2>Chưa có Summary</h2><p>Chọn tài liệu ở cột Học liệu để xem Summary.</p></div>}</div></section>;
 }
 
-function WorkspaceScreen({ days, selection, onBack, onToggleDay, onSelect, onOpenSummaryReview }: { days: Day[]; selection: Selection | null; onBack: () => void; onToggleDay: (dayId: string) => void; onSelect: (selection: Selection) => void; onOpenSummaryReview: () => void }) {
+function WorkspaceScreen({ days, selection, onBack, onToggleDay, onSelect, onOpenSummaryReview: _onOpenSummaryReview, onGenerateSummary }: { days: Day[]; selection: Selection | null; onBack: () => void; onToggleDay: (dayId: string) => void; onSelect: (selection: Selection) => void; onOpenSummaryReview: () => void; onGenerateSummary?: (documentId: string) => void }) {
   const [splitMode, setSplitMode] = useState(false);
   const [materialsCollapsed, setMaterialsCollapsed] = useState(false);
   const [viewerCollapsed, setViewerCollapsed] = useState(false);
@@ -481,20 +756,29 @@ function WorkspaceScreen({ days, selection, onBack, onToggleDay, onSelect, onOpe
   const [slideRatio, setSlideRatio] = useState(.56);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [selectedText, setSelectedText] = useState("");
-  const [prefillQuestion, setPrefillQuestion] = useState("");
-  const pageRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+  const [selectedContext, setSelectedContext] = useState<TextSelectionContext | null>(null);
+  const [attachedContext, setAttachedContext] = useState<TextSelectionContext | null>(null);
+  const pageRefs = useRef<Map<number, HTMLElement>>(new Map());
   const dragState = useRef<{ target: "materials" | "tutor" | "summary"; x: number; value: number; width: number } | null>(null);
   const document = useMemo(() => days.flatMap((day) => day.documents).find((item) => item.id === selection?.docId) ?? null, [days, selection?.docId]);
+  const onOpenSummaryReview = () => { if (document) { if (onGenerateSummary) onGenerateSummary(document.id); else window.dispatchEvent(new CustomEvent("vlearn-generate-summary", { detail: document.id })); } };
   const handlePageCount = useCallback((count: number) => setTotalPages(count), []);
-  useEffect(() => { setPage(1); setTotalPages(0); setSummaryCollapsed(false); setSelectedText(""); }, [document?.id]);
+  useEffect(() => { setPage(1); setTotalPages(0); setSummaryCollapsed(false); setSelectedContext(null); setAttachedContext(null); }, [document?.id]);
   useEffect(() => {
-    const target = pageRefs.current.get(page);
-    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [page, totalPages, pageRefs]);
+    const firstPage = pageRefs.current.get(1);
+    const root = firstPage?.closest<HTMLElement>(".document-scroll");
+    if (!root || !totalPages) return;
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((left, right) => right.intersectionRatio - left.intersectionRatio)[0];
+      const nextPage = Number((visible?.target as HTMLElement | undefined)?.dataset.page);
+      if (nextPage) setPage(nextPage);
+    }, { root, threshold: [0.25, 0.5, 0.75] });
+    for (const target of pageRefs.current.values()) observer.observe(target);
+    return () => observer.disconnect();
+  }, [document?.id, totalPages]);
   function startResize(target: "materials" | "tutor" | "summary", event: PointerEvent<HTMLButtonElement>) {
     event.currentTarget.setPointerCapture(event.pointerId);
-    const width = event.currentTarget.parentElement?.getBoundingClientRect().width ?? window.innerWidth;
+    const width = target === "summary" ? event.currentTarget.parentElement?.getBoundingClientRect().width ?? window.innerWidth : 1;
     dragState.current = { target, x: event.clientX, value: target === "materials" ? materialsWidth : target === "tutor" ? tutorWidth : slideRatio, width };
   }
   function resize(event: PointerEvent<HTMLButtonElement>) {
@@ -522,6 +806,38 @@ function WorkspaceScreen({ days, selection, onBack, onToggleDay, onSelect, onOpe
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     setPage(targetPage);
   }
+  useEffect(() => {
+    function handleSummaryJump(event: Event) {
+      const targetPage = Number((event as CustomEvent<number>).detail);
+      if (Number.isInteger(targetPage) && targetPage > 0) {
+        setSplitMode(true);
+        setViewerCollapsed(false);
+        setSummaryCollapsed(false);
+        window.setTimeout(() => scrollToPage(targetPage), 0);
+      }
+    }
+    window.addEventListener("vlearn-jump-slide", handleSummaryJump);
+    return () => window.removeEventListener("vlearn-jump-slide", handleSummaryJump);
+  }, [totalPages]);
+  useEffect(() => {
+    if (!selectedContext) return;
+    function dismissSelection(event: Event) {
+      const target = event.target;
+      if (target instanceof Element && target.closest(".selection-tooltip")) return;
+      window.getSelection()?.removeAllRanges();
+      setSelectedContext(null);
+    }
+    function dismissOnScroll() {
+      window.getSelection()?.removeAllRanges();
+      setSelectedContext(null);
+    }
+    window.addEventListener("pointerdown", dismissSelection, true);
+    window.addEventListener("scroll", dismissOnScroll, true);
+    return () => {
+      window.removeEventListener("pointerdown", dismissSelection, true);
+      window.removeEventListener("scroll", dismissOnScroll, true);
+    };
+  }, [selectedContext]);
   function previousPage() {
     const prev = Math.max(1, page - 1);
     scrollToPage(prev);
@@ -531,17 +847,20 @@ function WorkspaceScreen({ days, selection, onBack, onToggleDay, onSelect, onOpe
     scrollToPage(next);
   }
   /* Text selection → Tooltip */
-  function handleTextSelect(text: string) {
-    setSelectedText(text);
+  function handleTextSelect(context: TextSelectionContext) {
+    setSelectedContext(context);
   }
-  function handleAskTutor(text: string) {
-    setPrefillQuestion(text);
-    setSelectedText("");
+  function handleAskTutor(context: TextSelectionContext) {
+    window.getSelection()?.removeAllRanges();
+    setAttachedContext(context);
+    setSelectedContext(null);
     setTutorCollapsed(false);
   }
+  function clearAttachedContext() { setAttachedContext(null); }
   const pageProps = { page, totalPages, onPageCount: handlePageCount };
+  const activeSlide = attachedContext?.slideFrom ?? selectedContext?.slideFrom;
   const summarySelected = selection?.kind === "summary";
-  return <main className="workspace-layout"><div className="workspace-toolbar"><div className="workspace-breadcrumb"><span>Học liệu môn học</span><CaretRight size={15} /><strong>{splitMode ? "Slide + Summary" : summarySelected ? "Summary" : "Tài liệu"}</strong></div><div className="workspace-view-actions"><button className={cn("view-mode-button", splitMode && "is-active")} onClick={() => { setSplitMode(true); setViewerCollapsed(false); }}><Rows size={16} /> Màn đôi</button><button className={cn("view-mode-button", !splitMode && "is-active")} onClick={() => { setSplitMode(false); setViewerCollapsed(false); }}><ArrowsOutSimple size={16} /> Màn đơn</button></div></div><div className={cn("workspace-grid", materialsCollapsed && "materials-is-collapsed", viewerCollapsed && "viewer-is-collapsed", tutorCollapsed && "tutor-is-collapsed")} style={{ "--materials-width": (materialsCollapsed ? 48 : materialsWidth) + "px", "--tutor-width": (tutorCollapsed ? 48 : tutorWidth) + "px" } as CSSProperties}><MaterialsSidebar days={days} selection={selection} onToggleDay={onToggleDay} onSelect={onSelect} collapsed={materialsCollapsed} onCollapse={() => setMaterialsCollapsed((current) => !current)} />{viewerCollapsed ? <button className="viewer-collapsed-rail" onClick={() => setViewerCollapsed(false)} aria-label="Mở vùng xem"><CaretRight size={18} /><BookOpen size={17} /><span>Viewer</span></button> : <section className={cn("workspace-content", splitMode && "is-split")}>{splitMode ? <div className={cn("content-split", summaryCollapsed && "summary-is-collapsed")} style={{ "--slide-basis": slideRatio * 100 + "%" } as CSSProperties}><section className="content-pane slide-pane"><ViewerToolbar label="Slide" {...pageProps} onPrevious={previousPage} onNext={nextPage} onCollapse={() => setViewerCollapsed(true)} /><div className="document-scroll"><DocumentSurface document={document} summarySelected={false} onOpenReview={onOpenSummaryReview} {...pageProps} onTextSelect={handleTextSelect} pageRefs={pageRefs} /></div><ViewerFooter page={page} totalPages={totalPages} onPrevious={previousPage} onNext={nextPage} /></section>{!summaryCollapsed && <button className="split-handle inner-split-handle" onPointerDown={(event) => startResize("summary", event)} onPointerMove={resize} onPointerUp={endResize} aria-label="Kéo để chỉnh kích thước Slide và Summary"><DotsThree size={17} /></button>}{summaryCollapsed ? <button className="summary-collapsed-rail" onClick={() => setSummaryCollapsed(false)} aria-label="Mở Summary"><CaretLeft size={18} /><Sparkle size={16} weight="fill" /><span>Summary</span></button> : <SummaryPane document={document} onOpenReview={onOpenSummaryReview} onCollapse={() => setSummaryCollapsed(true)} />}</div> : <section className="content-pane single-pane"><ViewerToolbar label={summarySelected ? "Summary" : "Slide"} {...pageProps} onPrevious={previousPage} onNext={nextPage} onCollapse={() => setViewerCollapsed(true)} /><div className="document-scroll"><DocumentSurface document={document} summarySelected={summarySelected} onOpenReview={onOpenSummaryReview} {...pageProps} onTextSelect={handleTextSelect} pageRefs={pageRefs} /></div>{!summarySelected && <ViewerFooter page={page} totalPages={totalPages} onPrevious={previousPage} onNext={nextPage} />}</section>}</section>}<button className="split-handle outer-split-handle" onPointerDown={(event) => startResize("tutor", event)} onPointerMove={resize} onPointerUp={endResize} aria-label="Kéo để chỉnh kích thước Tutor"><DotsThree size={17} /></button>{tutorCollapsed ? <TutorCollapsedRail onExpand={() => setTutorCollapsed(false)} /> : <TutorPanel document={document} onCollapse={() => setTutorCollapsed(true)} prefillQuestion={prefillQuestion} onClearPrefill={() => setPrefillQuestion("")} />}</div>{selectedText && <SelectionTooltip text={selectedText} onAskTutor={handleAskTutor} onDismiss={() => setSelectedText("")} />}<button className="workspace-back-fab" onClick={onBack}><ArrowLeft size={16} /> Về khóa học</button></main>;
+  return <main className="workspace-layout"><div className="workspace-toolbar"><div className="workspace-breadcrumb"><span>Học liệu môn học</span><CaretRight size={15} /><strong>{splitMode ? "Slide + Summary" : summarySelected ? "Summary" : "Tài liệu"}</strong></div><div className="workspace-view-actions"><button className={cn("view-mode-button", splitMode && "is-active")} onClick={() => { setSplitMode(true); setViewerCollapsed(false); }}><Rows size={16} /> Màn đôi</button><button className={cn("view-mode-button", !splitMode && "is-active")} onClick={() => { setSplitMode(false); setViewerCollapsed(false); }}><ArrowsOutSimple size={16} /> Màn đơn</button></div></div><div className={cn("workspace-grid", materialsCollapsed && "materials-is-collapsed", viewerCollapsed && "viewer-is-collapsed", tutorCollapsed && "tutor-is-collapsed")} style={{ "--materials-width": (materialsCollapsed ? 48 : materialsWidth) + "px", "--tutor-width": (tutorCollapsed ? 48 : tutorWidth) + "px" } as CSSProperties}><MaterialsSidebar days={days} selection={selection} onToggleDay={onToggleDay} onSelect={onSelect} collapsed={materialsCollapsed} onCollapse={() => setMaterialsCollapsed((current) => !current)} />{viewerCollapsed ? <button className="viewer-collapsed-rail" onClick={() => setViewerCollapsed(false)} aria-label="Mở vùng xem"><CaretRight size={18} /><BookOpen size={17} /><span>Viewer</span></button> : <section className={cn("workspace-content", splitMode && "is-split")}>{splitMode ? <div className={cn("content-split", summaryCollapsed && "summary-is-collapsed")} style={{ "--slide-basis": slideRatio * 100 + "%" } as CSSProperties}><section className="content-pane slide-pane"><ViewerToolbar label="Slide" {...pageProps} onPrevious={previousPage} onNext={nextPage} onCollapse={() => setViewerCollapsed(true)} /><div className="document-scroll"><DocumentSurface document={document} summarySelected={false} onOpenReview={onOpenSummaryReview} {...pageProps} onTextSelect={handleTextSelect} pageRefs={pageRefs} activeSlide={activeSlide} /></div><ViewerFooter page={page} totalPages={totalPages} onPrevious={previousPage} onNext={nextPage} /></section>{!summaryCollapsed && <button className="split-handle inner-split-handle" onPointerDown={(event) => startResize("summary", event)} onPointerMove={resize} onPointerUp={endResize} onPointerCancel={endResize} onLostPointerCapture={endResize} aria-label="Kéo để chỉnh kích thước Slide và Summary"><DotsThree size={17} /></button>}{summaryCollapsed ? <button className="summary-collapsed-rail" onClick={() => setSummaryCollapsed(false)} aria-label="Mở Summary"><CaretLeft size={18} /><Sparkle size={16} weight="fill" /><span>Summary</span></button> : <SummaryPane document={document} onOpenReview={onOpenSummaryReview} onCollapse={() => setSummaryCollapsed(true)} />}</div> : <section className="content-pane single-pane"><ViewerToolbar label={summarySelected ? "Summary" : "Slide"} {...pageProps} onPrevious={previousPage} onNext={nextPage} onCollapse={() => setViewerCollapsed(true)} /><div className="document-scroll"><DocumentSurface document={document} summarySelected={summarySelected} onOpenReview={onOpenSummaryReview} {...pageProps} onTextSelect={handleTextSelect} pageRefs={pageRefs} activeSlide={activeSlide} /></div>{!summarySelected && <ViewerFooter page={page} totalPages={totalPages} onPrevious={previousPage} onNext={nextPage} />}</section>}</section>}<button className="split-handle outer-split-handle" onPointerDown={(event) => startResize("tutor", event)} onPointerMove={resize} onPointerUp={endResize} onPointerCancel={endResize} onLostPointerCapture={endResize} aria-label="Kéo để chỉnh kích thước Tutor"><DotsThree size={17} /></button>{tutorCollapsed ? <TutorCollapsedRail onExpand={() => setTutorCollapsed(false)} /> : <TutorPanel document={document} onCollapse={() => setTutorCollapsed(true)} slideContext={attachedContext ?? undefined} onClearSlideContext={clearAttachedContext} onJumpToSlide={scrollToPage} />}</div>{selectedContext && <SelectionTooltip selection={selectedContext} onAskTutor={handleAskTutor} />}<button className="workspace-back-fab" onClick={onBack}><ArrowLeft size={16} /> Về khóa học</button></main>;
 }
 
 function SlideReviewScreen({ document, onBack, onSave }: { document: DocumentRecord; onBack: () => void; onSave: (note: string) => void }) {
@@ -566,13 +885,60 @@ export default function Home() {
   const [screen, setScreen] = useState<Screen>("course");
   const [days, setDays] = useState<Day[]>(createDays);
   const [selection, setSelection] = useState<Selection | null>(null);
-  const [uploadFile, setUploadFile] = useState<File | null>(null);
-  const [uploadDayId, setUploadDayId] = useState("day-01");
-  const [uploadError, setUploadError] = useState("");
   const [darkMode, setDarkMode] = useState(false);
   function toggleDark() { setDarkMode((current) => !current); }
 
   const selectedDocument = useMemo(() => days.flatMap((day) => day.documents).find((document) => document.id === selection?.docId) ?? null, [days, selection?.docId]);
+
+  async function generateSummary(documentId: string) {
+    const target = days.flatMap((day) => day.documents).find((document) => document.id === documentId);
+    if (!target) return;
+    const cached = readCachedSummary(target.deck.deckId);
+    if (cached) {
+      updateDocument(documentId, { summary: cached.summary, summaryState: summaryStateFromCache(cached) });
+      return;
+    }
+    if (target.summaryState.status === "loading" || target.summaryState.status === "ready" || target.summaryState.status === "partial") return;
+    updateDocument(documentId, { summaryState: { status: "loading", stage: "Đang chạy Map stage..." } });
+    try {
+      const response = await fetch("/api/summary", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ deckId: target.deck.deckId }) });
+      const data = await response.json().catch(() => null) as { summary?: DeckSummary; partial?: boolean; error?: string } | null;
+      if (!response.ok || !data?.summary) {
+        const message = data?.error === "no-text" ? "Không có text đủ tin cậy để tóm tắt slide này." : "Hiện tại chức năng tóm tắt đang gặp sự cố, mong bạn thử lại sau.";
+        updateDocument(documentId, { summaryState: { status: "error", reason: data?.error === "no-text" ? "no-text" : "api", message } });
+        return;
+      }
+      const partial = data.partial === true;
+      writeCachedSummary(target.deck.deckId, { summary: data.summary, partial });
+      updateDocument(documentId, { summary: data.summary, summaryState: partial ? { status: "partial", summary: data.summary, note: "Một số slide có độ tin cậy thấp." } : { status: "ready", summary: data.summary } });
+    } catch {
+      updateDocument(documentId, { summaryState: { status: "error", reason: "api", message: "Hiện tại chức năng tóm tắt đang gặp sự cố, mong bạn thử lại sau." } });
+    }
+  }
+
+  useEffect(() => {
+    let changed = false;
+    const hydrated = days.map((day) => ({
+      ...day,
+      documents: day.documents.map((document) => {
+        if (document.summaryState.status !== "idle") return document;
+        const cached = readCachedSummary(document.deck.deckId);
+        if (!cached) return document;
+        changed = true;
+        return { ...document, summary: cached.summary, summaryState: summaryStateFromCache(cached) };
+      }),
+    }));
+    if (changed) setDays(hydrated);
+  }, []);
+
+  useEffect(() => {
+    function handleSummaryRequest(event: Event) {
+      const documentId = String((event as CustomEvent<string>).detail || "");
+      if (documentId) void generateSummary(documentId);
+    }
+    window.addEventListener("vlearn-generate-summary", handleSummaryRequest);
+    return () => window.removeEventListener("vlearn-generate-summary", handleSummaryRequest);
+  }, [days]);
 
   function updateDocument(docId: string, patch: Partial<DocumentRecord>) {
     setDays((current) => current.map((day) => ({ ...day, documents: day.documents.map((document) => document.id === docId ? { ...document, ...patch } : document) })));
@@ -588,67 +954,5 @@ export default function Home() {
     setScreen("workspace");
   }
 
-  function openUpload() {
-    setUploadError("");
-    setScreen("upload");
-  }
-
-  function startPipeline(docId: string, file: File) {
-    void (async () => {
-      const stages = [{ progress: 22, stage: "Đang đọc metadata" }, { progress: 42, stage: "Đang parse/OCR" }, { progress: 62, stage: "Đang chia chunk" }, { progress: 82, stage: "Đang tạo index" }, { progress: 94, stage: "Đang tạo Summary draft" }];
-      for (const stage of stages) {
-        updateDocument(docId, stage);
-        await wait(450);
-      }
-      try {
-        const extractedText = await readTextLayer(file);
-        const chunks = chunkText(extractedText);
-        updateDocument(docId, { status: "review", progress: 100, stage: "Chờ review slide và summary", extractedText, chunks, summaryDraft: chunks.length ? "Đã tạo draft từ " + chunks.length + " chunk text. Cần review trước khi upsert." : "Chưa có text layer để sinh Summary tự động." });
-      } catch {
-        updateDocument(docId, { status: "error", progress: 100, stage: "Không đọc được file" });
-      }
-    })();
-  }
-
-  function submitUpload() {
-    if (!uploadFile) { setUploadError("Hãy chọn file trước khi chạy pipeline."); return; }
-    const docId = createId("document");
-    const document: DocumentRecord = { id: docId, fileName: uploadFile.name, fileSize: uploadFile.size, fileType: uploadFile.type || uploadFile.name.split(".").pop()?.toUpperCase() || "FILE", file: uploadFile, status: "processing", stage: "Đang đưa vào pipeline", progress: 8, chunks: [], extractedText: "", summaryDraft: "", summaryNote: "", slideReviewNote: "", slideChecked: false, summaryApproved: false };
-    setDays((current) => current.map((day) => day.id === uploadDayId ? { ...day, expanded: true, documents: [...day.documents, document] } : day));
-    setSelection({ dayId: uploadDayId, docId, kind: "document" });
-    setUploadFile(null);
-    setScreen("pipeline");
-    startPipeline(docId, uploadFile);
-  }
-
-  function openPipeline(document: DocumentRecord) {
-    const day = days.find((item) => item.documents.some((entry) => entry.id === document.id));
-    if (day) setSelection({ dayId: day.id, docId: document.id, kind: "document" });
-    setScreen("pipeline");
-  }
-
-  function openSlideReview(document: DocumentRecord) {
-    const day = days.find((item) => item.documents.some((entry) => entry.id === document.id));
-    if (day) setSelection({ dayId: day.id, docId: document.id, kind: "document" });
-    setScreen("slideReview");
-  }
-
-  function openSummaryReview(document: DocumentRecord) {
-    const day = days.find((item) => item.documents.some((entry) => entry.id === document.id));
-    if (day) setSelection({ dayId: day.id, docId: document.id, kind: "summary" });
-    setScreen("summaryReview");
-  }
-
-  function saveSlideReview(note: string) {
-    if (selectedDocument) updateDocument(selectedDocument.id, { slideReviewNote: note, slideChecked: true });
-    setScreen("library");
-  }
-
-  function saveSummaryReview(note: string) {
-    if (selectedDocument) updateDocument(selectedDocument.id, { summaryNote: note, summaryApproved: true, status: "approved", stage: "Đã approve và upsert" });
-    setScreen("library");
-  }
-
-  const topScreen = ["course", "library", "upload", "pipeline", "slideReview", "summaryReview"].includes(screen) ? screen : screen === "workspace" ? "course" : screen;
-  return <div className={cn("app-shell", darkMode && "dark")}>{screen !== "workspace" ? <MainHeader screen={topScreen as Screen} onNavigate={setScreen} darkMode={darkMode} onToggleDark={toggleDark} /> : <WorkspaceHeader document={selectedDocument} onBack={() => setScreen("course")} darkMode={darkMode} onToggleDark={toggleDark} />}{screen === "course" && <CourseScreen days={days} onToggleDay={toggleDay} onOpen={openWorkspace} />}{screen === "library" && <LibraryScreen days={days} onToggleDay={toggleDay} onUpload={openUpload} onOpenPipeline={openPipeline} onOpenSlideReview={openSlideReview} onOpenSummaryReview={openSummaryReview} onOpenWorkspace={openWorkspace} />}{screen === "upload" && <UploadPipelineScreen days={days} file={uploadFile} dayId={uploadDayId} error={uploadError} onBack={() => setScreen("library")} onFile={setUploadFile} onDayChange={setUploadDayId} onSubmit={submitUpload} />}{screen === "pipeline" && selectedDocument && <PipelineScreen document={selectedDocument} onBack={() => setScreen("library")} onReviewSlide={() => setScreen("slideReview")} onReviewSummary={() => setScreen("summaryReview")} />}{screen === "slideReview" && selectedDocument && <SlideReviewScreen document={selectedDocument} onBack={() => setScreen("library")} onSave={saveSlideReview} />}{screen === "summaryReview" && selectedDocument && <SummaryReviewScreen document={selectedDocument} onBack={() => setScreen("library")} onSave={saveSummaryReview} />}{screen === "workspace" && <WorkspaceScreen days={days} selection={selection} onBack={() => setScreen("course")} onToggleDay={toggleDay} onSelect={openWorkspace} onOpenSummaryReview={() => selectedDocument && openSummaryReview(selectedDocument)} />}</div>;
+  return <div className={cn("app-shell", darkMode && "dark")}>{screen !== "workspace" ? <MainHeader darkMode={darkMode} onToggleDark={toggleDark} /> : <WorkspaceHeader document={selectedDocument} onBack={() => setScreen("course")} darkMode={darkMode} onToggleDark={toggleDark} />}{screen === "course" && <CourseScreen days={days} onToggleDay={toggleDay} onOpen={openWorkspace} />}{screen === "workspace" && <WorkspaceScreen days={days} selection={selection} onBack={() => setScreen("course")} onToggleDay={toggleDay} onSelect={openWorkspace} onOpenSummaryReview={() => undefined} onGenerateSummary={generateSummary} />}</div>;
 }

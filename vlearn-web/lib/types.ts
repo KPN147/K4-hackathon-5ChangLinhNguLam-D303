@@ -19,6 +19,15 @@ export type SlidePageMeta = {
   textDensity: number;
 };
 
+/** Một token chữ với toạ độ chuẩn hoá theo kích thước trang PDF (0..1). */
+export type SlideTextSpan = {
+  text: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 /** Một trang slide sau khi trích xuất. */
 export type SlidePage = {
   /** Số trang VẬT LÝ trong PDF, 1-based. Không dùng số in ở footer slide. */
@@ -28,6 +37,8 @@ export type SlidePage = {
   /** false = không đủ chữ để tóm tắt → UI đi đường low-confidence (spec §6, HAX G10). */
   hasText: boolean;
   meta: SlidePageMeta;
+  /** Text layer dùng để bôi đen đúng vị trí trên ảnh slide. Sinh offline từ PDF gốc. */
+  textSpans?: SlideTextSpan[];
 };
 
 /**

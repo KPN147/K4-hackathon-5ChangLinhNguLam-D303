@@ -27,3 +27,15 @@ node_modules/
 out/
 next-env.d.ts
 *.tsbuildinfo
+
+# Local OS/tooling files
+.DS_Store
+.pnpm-store/
+
+# Local demo-only slide PDFs and rendered pages; never commit the data pack.
+vlearn-web/.local-data/
+tmp/pdfs/
+
+# Local agent skills (never commit downloaded skill bundles)
+/.codex/skills/
+/.agents/skills/

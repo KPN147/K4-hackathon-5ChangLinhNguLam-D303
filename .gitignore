@@ -1,0 +1,29 @@
+# Data pack được cấp — KHÔNG commit vào repo nộp bài.
+# Quy định bảo mật: README mục "Bảo mật dữ liệu được cung cấp", điểm 3.
+# Trích dẫn trong spec/eval bằng mã đoạn [Txx-NNN] / mã hội thoại, không dán nguyên văn dài.
+# Dấu / đầu dòng: CHỈ chặn data/ ở gốc repo, không chặn vlearn-web/data/ (JSON slide đã trích).
+/data/
+
+# Tài liệu đề bài do BTC cấp — không thuộc bài nộp của nhóm
+01-de-bai.md
+02-guide.md
+04-rubric.md
+tham-khao/
+
+# Ảnh render từ bộ slide — 58 file / 7,5 MB, sinh lại bằng: python tools/render_slides.py
+vlearn-web/public/slides/
+
+# Bản chunking song song của thành viên khác — nhóm chưa chốt dùng bản nào
+vlearn-web/data/chunks-*.json
+
+# Không commit API key
+.env
+.env.*
+!.env.example
+
+# Node / Next
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo

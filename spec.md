@@ -7,7 +7,7 @@ Loại: [x] Tính năng mới  [ ] Tối ưu tính năng có sẵn
 ## §1. User & Job
 *   **Job executor + workflow:**
     *   **Học viên lớp AI Thực Chiến** đang tự ôn tập kiến thức sau buổi học hoặc chuẩn bị làm bài quiz kiểm tra năng lực cuối buổi.
-    *   Worksheet JTBD — đính kèm: [validation/worksheet_jtbd.md]
+    *   Worksheet JTBD — đính kèm: [validation/worksheet_jtbd.md](./validation/worksheet_jtbd.md)
 *   **Core JTBD:** Nắm bắt tổng quan nội dung và định vị nhanh các phần kiến thức trọng tâm trong một bộ tài liệu giảng dạy nhiều trang để ôn tập hiệu quả. *(Không chứa chữ AI hay sản phẩm)*
 *   **Problem statement:** Học viên khi ôn tập bài giảng vướng tình trạng phải đọc lần lượt từng trang slide rời rạc, không nắm được cấu trúc tổng thể và khó định vị chính xác vị trí kiến thức cần ôn tập, dẫn đến tốn thời gian lội lại thủ công hoặc bỏ sót kiến thức quan trọng. *(Không chứa chữ AI)*
 *   **Evidence (log đầy đủ trong repo):**
@@ -16,7 +16,7 @@ Loại: [x] Tính năng mới  [ ] Tối ưu tính năng có sẵn
     - Số người khảo sát: **24 người ngoài nhóm** (đạt chuẩn ≥20) · Ngày 30/07/2026
     - Q1 — Tỷ lệ xác nhận gặp khó khăn: **23/24 = 95.8%** (đạt chuẩn ≥50%)
     - Q2 — Tỷ lệ thấy tính năng hữu dụng: **23/24 = 95.8%**
-    - Log đầy đủ (câu hỏi nguyên văn + từng câu trả lời ẩn danh): [validation/survey_log.md]
+    - Log đầy đủ (câu hỏi nguyên văn + từng câu trả lời ẩn danh): [validation/survey_log.md](./validation/survey_log.md)
 
 
     ### Chuẩn B — Mining dữ liệu chatlog
@@ -44,7 +44,7 @@ Loại: [x] Tính năng mới  [ ] Tối ưu tính năng có sẵn
     - **Hành vi sau bị từ chối:** 26/48 lần học viên bỏ hội thoại ngay sau khi bị từ chối tóm tắt **(54% churn rate)**
     - **Nhu cầu tự phát:** 88 cách diễn đạt khác nhau trong 97 lượt — không phải do nút bấm gợi ý, đây là nhu cầu thực sự tự phát của học viên
 
-    **≥5 quote/ví dụ nguyên văn từ chatlog thật (nguồn: `evidence-summarization-FULL.md`):**
+    **≥5 quote/ví dụ nguyên văn từ chatlog thật (nguồn: [`evidence-summarization-FULL.md`](./validation/evidence-summarization-FULL.md)):**
 
     1. *"tóm tắt các chủ đề chính của slide day05-lecture-slides-batch03.pdf này"* → Tutor từ chối: *"Rất tiếc, tôi không thể tìm thấy tệp tin... Bạn có thể cung cấp thêm thông tin..."* (`T0408` · `U0168` · rating=**down**)
 
@@ -72,8 +72,8 @@ Loại: [x] Tính năng mới  [ ] Tối ưu tính năng có sẵn
 | **3. AI gợi ý câu hỏi follow-up sau mỗi phiên học** | 0% user (0/369 user) | 0% lượt chat (trường `follow_ups` luôn = `[]` trong dữ liệu) | Thấp — học viên chưa có thói quen chủ động yêu cầu câu hỏi gợi ý | **Trung bình** — cần xây dựng hệ thống gợi ý khớp tiến trình sư phạm | Loại |
 
 *   **Ứng viên ĐÃ LOẠI + vì sao:**
-    - *Ứng viên 2 (AI phát hiện học viên bị stuck):* Bị loại vì quy mô ảnh hưởng nhỏ (**5.98% hội thoại** so với **25.7%** của tính năng tóm tắt slide). Mặc dù tỷ lệ churn sau kẹt rất cao (**51.43%**), việc tự động nhận diện "stuck" rất mơ hồ và dễ gây phiền hà cho học sinh nếu AI can thiệp không đúng lúc. Xem chi tiết báo cáo: [validation/evidence-stuck-detection-analysis.md]
-    - *Ứng viên 3 (AI gợi ý câu hỏi follow-up):* Bị loại vì dữ liệu chatlog cho thấy **0%** học viên có nhu cầu tự phát đòi hỏi tính năng này. Việc thiết kế câu hỏi follow-up chất lượng yêu cầu cấu trúc chặt chẽ theo từng bài giảng học thuật, khó kiểm chứng chất lượng trong thời gian ngắn. Xem chi tiết báo cáo: [validation/evidence-followups-analysis.md]
+    - *Ứng viên 2 (AI phát hiện học viên bị stuck):* Bị loại vì quy mô ảnh hưởng nhỏ (**5.98% hội thoại** so với **25.7%** của tính năng tóm tắt slide). Mặc dù tỷ lệ churn sau kẹt rất cao (**51.43%**), việc tự động nhận diện "stuck" rất mơ hồ và dễ gây phiền hà cho học sinh nếu AI can thiệp không đúng lúc. Xem chi tiết báo cáo: [validation/evidence-stuck-detection-analysis.md](./validation/evidence-stuck-detection-analysis.md).
+    - *Ứng viên 3 (AI gợi ý câu hỏi follow-up):* Bị loại vì dữ liệu chatlog cho thấy **0%** học viên có nhu cầu tự phát đòi hỏi tính năng này. Việc thiết kế câu hỏi follow-up chất lượng yêu cầu cấu trúc chặt chẽ theo từng bài giảng học thuật, khó kiểm chứng chất lượng trong thời gian ngắn. Xem chi tiết báo cáo: [validation/evidence-followups-analysis.md](./validation/evidence-followups-analysis.md).
 *   **Ứng viên CHỌN + vì sao (bằng số):** Chọn ứng viên 1 vì có bằng chứng định lượng rõ ràng nhất: **25.7%** tổng user đã chủ động hỏi tóm tắt, tỷ lệ AI fail lên tới **54.3%** (gấp 3 lần các câu hỏi thường), **8/37 downvote (22%)** toàn hệ là câu hỏi tóm tắt, và **54% học viên bỏ cuộc** ngay sau khi bị từ chối. Tính năng này giải quyết được pain point lớn nhất, khả thi nhất để đo lường và hoàn thiện trong hackathon.
 
 ---
@@ -116,7 +116,7 @@ Loại: [x] Tính năng mới  [ ] Tối ưu tính năng có sẵn
 
 ## §5. Kiểu lỗi — 4 lớp chỗ khó + kịch bản (≥8) [bảng theo guide §2.5]
 
-*(Các kịch bản dưới đây được xây dựng dựa trên dữ liệu slide nạp sẵn và log lỗi thực tế từ `evidence-summarization-FULL.md`)*
+*(Các kịch bản dưới đây được xây dựng dựa trên dữ liệu slide nạp sẵn và log lỗi thực tế từ [evidence-summarization-FULL.md](./validation/evidence-summarization-FULL.md))*
 
 | Tình huống cụ thể | Lớp | Hành vi mong muốn (nói gì, hiện gì, làm gì tiếp) | Nguyên tắc áp |
 |---|---|---|---|
@@ -174,7 +174,7 @@ Loại: [x] Tính năng mới  [ ] Tối ưu tính năng có sẵn
         1. *"Điều gì khó hiểu hoặc khó chịu nhất khi dùng thử?"*
         2. *"Kết quả tóm tắt và trích dẫn này bạn có tin không — vì sao?"*
         3. *"Bạn có dùng thật không — vì sao / vì sao chưa?"*
-    *   *Người log:* Phạm Nam Khánh — lưu tại `validation/feedback_log.md`
+    *   *Người log:* Phạm Nam Khánh — lưu tại [validation/feedback_log.md](./validation/feedback_log.md)
 *   **Multi-prototype:**
     - *Phương án 1 (Giao diện Mindmap):* Hiển thị tóm tắt dưới dạng cây sơ đồ tư duy (mindmap) tương tác. Ưu: Rất trực quan. Nhược: Khó hiển thị mượt mà trên khung chat AI hẹp của VLearn, lập trình phức tạp trong thời gian ngắn.
     - *Phương án 2 (Giao diện Bullet Points kèm Clickable Links):* Tóm tắt dạng danh sách phân mục lớn (Chương 1, Chương 2...) kèm link `[Slide XX]` để click cuộn trang. Ưu: Khả thi cao, hiển thị rõ ràng, tối ưu cho không gian hẹp.

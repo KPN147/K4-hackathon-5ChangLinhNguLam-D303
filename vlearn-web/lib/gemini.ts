@@ -64,6 +64,10 @@ function getChatCompletionConfig(provider: string): ChatCompletionConfig | null 
   return null;
 }
 
+// Tỷ lệ thân rỗng đo được là ~50%/lần gọi. 4 lần thử đưa rủi ro về ~6%,
+// và vì lần hỏng trả về sau 1-2 giây nên thử lại gần như không tốn thời gian.
+const EMPTY_REPLY_ATTEMPTS = 4;
+
 async function generateChatCompletion(
   config: ChatCompletionConfig,
   systemInstruction: string,
@@ -73,7 +77,7 @@ async function generateChatCompletion(
   const startIndex = Math.floor(Date.now() / 1000) % config.keys.length;
   for (let offset = 0; offset < config.keys.length; offset += 1) {
     const key = config.keys[(startIndex + offset) % config.keys.length];
-    for (let attempt = 0; attempt < 2; attempt += 1) {
+    for (let attempt = 0; attempt < EMPTY_REPLY_ATTEMPTS; attempt += 1) {
       try {
         const response = await fetchWithTimeout(config.endpoint, {
           method: "POST",
@@ -95,6 +99,10 @@ async function generateChatCompletion(
         const body = await response.json().catch(() => null) as { choices?: Array<{ message?: { content?: string | null } }> } | null;
         const text = body?.choices?.[0]?.message?.content?.trim();
         if (response.ok && text) return { text, model: config.model };
+        // Vilao trả HTTP 200 nhưng thân rỗng (`choices: []`, completion_tokens = 0) ở
+        // khoảng một nửa số lần gọi — đo được 4/8. Vì mã vẫn là 200 nên nhánh dưới coi
+        // đó là lỗi vĩnh viễn và bỏ cuộc ngay. Thực ra đây là lỗi tạm thời: thử lại là được.
+        if (response.ok) continue;
         if (![408, 425, 429, 500, 502, 503, 504].includes(response.status)) break;
       } catch {
         // Retry one transient network/timeout failure before trying the next key.

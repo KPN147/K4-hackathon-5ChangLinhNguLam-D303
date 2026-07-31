@@ -169,7 +169,7 @@ Loại: [x] Tính năng mới  [ ] Tối ưu tính năng có sẵn
     *   **Nguyễn Văn Huy Hoàng** — 2A202601338: Thu thập và hoàn thiện toàn bộ Evidence (Chuẩn A khảo sát & Chuẩn B mining chatlog).
     *   **Phạm Nam Khánh** — 2A202601718: Viết Spec + Chuẩn bị kế hoạch validation CP5.
 *   **Willing users (≥3 tên) + kế hoạch vòng validation CP5:**
-    *   *Danh sách:* Lê Văn Tuấn, Trần Đăng Nguyên, Nguyễn Khánh Toàn 
+    *   *Danh sách:* Lê Văn Tuấn, Phùng Văn Linh, Nguyễn Khánh Toàn, Trương Minh Hoàng, Trần Đăng Nguyên 
     *   *Kế hoạch validation (3 câu hỏi, theo guide §4.2):*
         1. *"Điều gì khó hiểu hoặc khó chịu nhất khi dùng thử?"*
         2. *"Kết quả tóm tắt và trích dẫn này bạn có tin không — vì sao?"*
@@ -186,4 +186,8 @@ Loại: [x] Tính năng mới  [ ] Tối ưu tính năng có sẵn
 
 | Thời điểm | Đổi gì | Vì sao (trỏ về feedback/case nào) |
 |---|---|---|
-| ⚠️ Chờ cập nhật | *(Điền sau CP5 khi có feedback từ user thật)* | *(Trỏ về quote cụ thể trong `validation/feedback_log.md`)* |
+| **CP5 - Sau Validation** | Tái cấu trúc UI xem slide sang dạng cuộn liên tục (Continuous Scroll Stack) và auto-scroll nhảy trực tiếp khi click citation link. | Giải quyết phản hồi của **Lê Văn Tuấn (01016)** về việc UI chưa tối ưu và phân trang quá nhiều. |
+| **CP5 - Sau Validation** | Tinh giản bố cục giao diện thành 2 cột cân bằng, ẩn bớt các nút phụ trợ và thông tin dư thừa. | Giải quyết phản hồi của **Phùng Văn Linh (01992)** về giao diện quá tải thông tin gây ảnh hưởng khi học. |
+| **CP5 - Sau Validation** | Thêm cơ chế phát hiện slide chứa sơ đồ/graph, hiển thị đề xuất học viên mở ảnh gốc thay vì ép OCR phân tích thô. | Khắc phục lỗi OCR đọc sai hình vẽ/biểu đồ dẫn đến trích dẫn sai của **Nguyễn Khánh Toàn (01738)**. |
+| **CP5 - Sau Validation** | Tối ưu hóa Context Tracking ngăn RAG lặp lại; áp dụng Prompt 4 bước quy định AI bắt buộc đưa ra ví dụ so sánh ẩn dụ thực tế trực quan. | Giải quyết phản hồi của **Trương Minh Hoàng (01262)** về việc liên tục RAG lại kiến thức cũ và ví dụ so sánh thiếu trực quan. |
+| **CP5 - Sau Validation** | Sửa bug tách context và logic phân mảnh khi tóm tắt một slide cụ thể, tối ưu prompt giảm thiểu tỷ lệ sai sót. | Khắc phục bug tóm tắt 1 slide cụ thể bị sai lệch của **Trần Đăng Nguyên (01798)**. |

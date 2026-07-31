@@ -844,6 +844,10 @@ h1, h2, h3, strong, .brand, .main-nav-item, .workspace-brand, .file-dropzone str
 .fixed-summary-empty { min-height: 430px; display: grid; place-items: center; align-content: center; gap: 10px; padding: 28px; color: var(--blue); text-align: center; }
 .fixed-summary-empty h2 { margin: 0; color: var(--ink); font-size: 18px; }
 .fixed-summary-empty p { max-width: 360px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+/* HAX G2 — nói rõ bản tóm tắt tốt đến đâu, để người học biết khi nào cần mở slide gốc. */
+.summary-disclaimer { display: flex; align-items: flex-start; gap: 7px; margin: 16px 0 10px; padding: 10px 11px; border: 1px solid #dceaf1; border-radius: 10px; color: var(--ink-soft); background: #f4faff; font-size: 11px; line-height: 1.5; }
+.summary-disclaimer svg { flex: 0 0 auto; margin-top: 1px; color: var(--blue); }
+.app-shell.dark .summary-disclaimer { border-color: var(--line); background: #1b2940; }
 .summary-generated { color: var(--muted); font-size: 10px; }
 .app-shell.dark .fixed-slide-page { border-color: #33506b; background: #fff; }
 .app-shell.dark .fixed-slide-canvas { border-color: #526477; color: #172e42; background: #fffdf4; }

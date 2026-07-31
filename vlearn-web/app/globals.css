@@ -803,7 +803,8 @@ h1, h2, h3, strong, .brand, .main-nav-item, .workspace-brand, .file-dropzone str
 .workspace-grid > .tutor-panel { grid-column: 4; grid-row: 1; display: flex; min-width: 0; min-height: 0; }
 .workspace-grid > * { min-height: 0; }
 .pdf-all-page-wrapper.is-selection-target { outline: 3px solid rgb(22 91 152 / .32); outline-offset: 2px; }
-.tutor-context-chip { display: flex; align-items: flex-start; gap: 7px; margin: 9px 12px 0; padding: 8px 9px; border: 1px solid #b9d6e7; border-radius: 9px; color: var(--ink-soft); background: #f1f8fc; font-size: 11px; line-height: 1.35; }
+/* Nằm ngay trên ô nhập: đây là ngữ cảnh của câu SẮP hỏi, không phải của tin nhắn cũ. */
+.tutor-context-chip { display: flex; align-items: flex-start; gap: 7px; flex: 0 0 auto; margin: 8px 12px; padding: 8px 9px; border: 1px solid #b9d6e7; border-radius: 9px; color: var(--ink-soft); background: #f1f8fc; font-size: 11px; line-height: 1.35; }
 .tutor-context-chip strong { color: var(--blue); white-space: nowrap; }
 .tutor-context-chip button { margin-left: auto; padding: 0; border: 0; color: var(--muted); background: transparent; }
 .app-shell.dark .tutor-context-chip { border-color: var(--line-strong); background: #18344f; }

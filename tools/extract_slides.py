@@ -5,6 +5,14 @@ Trích xuất nội dung bộ slide bài giảng thành JSON nạp sẵn cho VLe
 Chạy OFFLINE một lần, không chạy lúc demo (spec.md §4 — nạp sẵn, không parse PDF runtime).
 Đầu ra khớp type `SlideDeck` trong vlearn-web/lib/types.ts.
 
+Sinh MỘT LẦN cả ba thứ, từ cùng một bản đã lọc:
+    text        — nội dung trang, đưa vào prompt tóm tắt
+    textSpans   — vị trí từng từ, làm lớp chọn chữ vô hình phủ lên ảnh slide
+    chunks      — đơn vị đưa vào bước Map
+Trước đây textSpans sinh bằng một script riêng không lọc watermark, nên cùng một
+trang có hai phiên bản nội dung khác nhau: AI đọc bản sạch còn học viên bôi đen
+trên bản còn watermark. Gộp về một nguồn để hai bản không thể lệch nhau nữa.
+
     python tools/extract_slides.py
     python tools/extract_slides.py --report      # in thêm bản kê ký tự đã loại
 
@@ -90,26 +98,69 @@ def find_repeated_slots(pdf) -> set:
     return {s for s, n in seen.items() if n >= floor}
 
 
+def is_icon_char(ch: str) -> bool:
+    """Ký tự font biểu tượng (Private Use Area) — không phải chữ, không đưa vào nội dung."""
+    return 0xE000 <= ord(ch) <= 0xF8FF
+
+
 def clean(text: str) -> str:
-    """Bỏ ký tự icon-font (Private Use Area) và gộp khoảng trắng thừa."""
-    text = "".join(" " if 0xE000 <= ord(ch) <= 0xF8FF else ch for ch in text)
+    """Bỏ ký tự icon-font và gộp khoảng trắng thừa. Dùng cho khối text nhiều dòng."""
+    text = "".join(" " if is_icon_char(ch) else ch for ch in text)
     lines = [re.sub(r"[ \t]+", " ", ln).strip() for ln in text.splitlines()]
     return "\n".join(ln for ln in lines if ln)
 
 
-def extract_page(page, repeated: set) -> tuple[str, dict]:
-    """Trích text của một trang sau khi bỏ các ô lặp."""
+def clean_word(text: str) -> str:
+    """
+    Như clean() nhưng cho MỘT từ: xoá hẳn ký tự icon thay vì thay bằng khoảng trắng,
+    để '<icon>Large' thành 'Large' mà vẫn giữ nguyên một khung bao quanh từ đó.
+    """
+    return "".join(ch for ch in text if not is_icon_char(ch)).strip()
+
+
+def unit(value: float, size: float) -> float:
+    """Chuẩn hoá toạ độ về 0..1 theo kích thước trang, để khớp mọi độ phân giải ảnh."""
+    return round(max(0.0, min(1.0, value / size)), 6)
+
+
+def extract_spans(kept, width: float, height: float) -> list[dict]:
+    """
+    Vị trí từng từ, dùng cho lớp chọn chữ vô hình phủ lên ảnh slide.
+
+    Chạy trên trang ĐÃ LỌC nên watermark không bao giờ lọt vào — đây chính là chỗ
+    trước kia sinh riêng một script khác và để sót 1.088 ô watermark, khiến học viên
+    bôi đen ngang trang là dính chữ H/A/C/K.
+    """
+    spans = []
+    for word in kept.extract_words(use_text_flow=False, keep_blank_chars=False):
+        text = clean_word(word["text"])
+        if not text:
+            continue
+        spans.append(
+            {
+                "text": text,
+                "x": unit(word["x0"], width),
+                "y": unit(word["top"], height),
+                "width": unit(word["x1"] - word["x0"], width),
+                "height": unit(word["bottom"] - word["top"], height),
+            }
+        )
+    return spans
+
+
+def extract_page(page, repeated: set) -> tuple[str, dict, list[dict]]:
+    """Trích text + vị trí từng từ của một trang, sau khi bỏ các ô lặp."""
     kept = page.filter(
         lambda obj: obj.get("object_type") != "char" or slot(obj) not in repeated
     )
+    width, height = float(page.width), float(page.height)
     text = clean(kept.extract_text() or "")
-    area = max(1.0, float(page.width) * float(page.height))
     meta = {
         "charCount": len(text),
         "imageCount": len(page.images),
-        "textDensity": round(len(text) / area * 1000, 3),
+        "textDensity": round(len(text) / max(1.0, width * height) * 1000, 3),
     }
-    return text, meta
+    return text, meta, extract_spans(kept, width, height)
 
 
 def build_chunks(pages: list[dict]) -> list[dict]:
@@ -139,13 +190,14 @@ def extract_deck(deck: dict, report: bool) -> dict:
 
         pages = []
         for index, page in enumerate(pdf.pages, start=1):
-            text, meta = extract_page(page, repeated)
+            text, meta, spans = extract_page(page, repeated)
             pages.append(
                 {
                     "page": index,
                     "text": text,
                     "hasText": meta["charCount"] >= MIN_CHARS_FOR_TEXT,
                     "meta": meta,
+                    "textSpans": spans,
                 }
             )
 
@@ -194,10 +246,12 @@ def main() -> None:
         )
 
         chars = sum(p["meta"]["charCount"] for p in data["pages"])
+        spans = sum(len(p["textSpans"]) for p in data["pages"])
         thin = [p["page"] for p in data["pages"] if not p["hasText"]]
         print(
             f"  {out.relative_to(REPO)}\n"
             f"      {data['totalPages']} trang · {len(data['chunks'])} chunk · {chars:,} ký tự\n"
+            f"      {spans:,} textSpans (sinh từ cùng bản đã lọc với text)\n"
             f"      đã loại: {data['extraction']['removedRepeatedText']!r}\n"
             f"      trang không đủ chữ: {thin or 'không có'}"
         )

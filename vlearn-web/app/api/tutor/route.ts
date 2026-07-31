@@ -246,8 +246,7 @@ export async function POST(request: Request) {
     const allowedPages = new Set([...contextPages(context), ...priorPages, ...chunks.flatMap((chunk) => chunk.slideFrom ? [chunk.slideFrom] : [])]);
 
     const result = await generateGeminiText({
-      // Không gán cứng provider: để LLM_PROVIDER trong .env quyết định, giống /api/summary.
-      // Gán cứng "gemini" khiến tutor hỏng toàn bộ khi nhóm chuyển sang Vilao.
+      provider: "gemini",
       systemInstruction: `You are VLearn Tutor for the fixed Day 1 and Day 2 slides. Answer in Vietnamese using only supplied slide evidence. Return valid JSON only.
 
 Instruction priority:

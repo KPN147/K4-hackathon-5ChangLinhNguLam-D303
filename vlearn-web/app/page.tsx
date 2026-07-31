@@ -42,6 +42,14 @@ import { PRELOADED_DECKS } from "../lib/preloaded-decks";
 type Screen = "course" | "workspace";
 type ItemKind = "document" | "summary";
 type PipelineStatus = "ready" | "processing" | "review" | "approved" | "error";
+type SummaryMode = "balanced" | "deep" | "review";
+type SummaryRequest = (mode: SummaryMode, regenerate?: boolean) => void;
+
+const SUMMARY_MODES: Array<{ value: SummaryMode; label: string; description: string }> = [
+  { value: "balanced", label: "Cân bằng", description: "Ý chính + giải thích vừa đủ" },
+  { value: "deep", label: "Hiểu sâu", description: "Cơ chế, ví dụ và giới hạn" },
+  { value: "review", label: "Ôn tập", description: "Định nghĩa, phân biệt và điểm nhớ" },
+];
 
 type DocumentRecord = {
   id: string;
@@ -84,6 +92,24 @@ type TextSelectionContext = {
   slideTo?: number;
   rect: { top: number; left: number; width: number; height: number };
 };
+
+function cleanSelectedSpanText(tokens: string[], watermark: string) {
+  const markers = [watermark, "NOHTAKCAH-NOITCANIIA"].filter(Boolean).map((marker) => Array.from(marker));
+  let remaining = tokens.map((token) => token.trim()).filter(Boolean);
+  for (const marker of markers) {
+    for (let index = 0; index <= remaining.length - marker.length; index += 1) {
+      if (remaining.slice(index, index + marker.length).join("") === marker.join("")) {
+        remaining.splice(index, marker.length);
+        index -= 1;
+      }
+    }
+  }
+  return remaining.join(" ")
+    .replace(/\s+([,.;:!?%)\]}])/g, "$1")
+    .replace(/([([{])\s+/g, "$1")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
 
 type ChatSource = {
   label: string;
@@ -230,31 +256,35 @@ const PRELOADED_COPY = {
 const UNCLASSIFIED_COPY = "Ch\u01b0a ph\u00e2n lo\u1ea1i";
 const SKIPPED_COPY = "Kh\u00f4ng c\u00f3 text \u0111\u1ecdc \u0111\u01b0\u1ee3c \u1edf: ";
 const CLIENT_FALLBACK_MESSAGE = "Hi\u1ec7n t\u1ea1i ch\u1ee9c n\u0103ng h\u1ecfi \u0111\u00e1p \u0111ang g\u1eb7p s\u1ef1 c\u1ed1, mong b\u1ea1n th\u1eed l\u1ea1i sau .";
-const SUMMARY_CACHE_VERSION = "v1";
+const SUMMARY_CACHE_VERSION = "v2";
 
 type CachedSummary = { summary: DeckSummary; partial: boolean };
 
-function summaryCacheKey(deckId: string) {
-  return `vlearn:summary:${SUMMARY_CACHE_VERSION}:${deckId}`;
+function summaryCacheKey(deckId: string, mode: SummaryMode) {
+  return `vlearn:summary:${SUMMARY_CACHE_VERSION}:${mode}:${deckId}`;
 }
 
-function readCachedSummary(deckId: string): CachedSummary | null {
+function readCachedSummary(deckId: string, mode: SummaryMode): CachedSummary | null {
   if (typeof window === "undefined") return null;
   try {
-    const parsed = JSON.parse(window.localStorage.getItem(summaryCacheKey(deckId)) || "null") as Partial<CachedSummary> | null;
+    const parsed = JSON.parse(window.localStorage.getItem(summaryCacheKey(deckId, mode)) || "null") as Partial<CachedSummary> | null;
     return parsed?.summary?.deckId === deckId && Array.isArray(parsed.summary.sections) ? { summary: parsed.summary as DeckSummary, partial: parsed.partial === true } : null;
   } catch {
     return null;
   }
 }
 
-function writeCachedSummary(deckId: string, value: CachedSummary) {
+function writeCachedSummary(deckId: string, mode: SummaryMode, value: CachedSummary) {
   if (typeof window === "undefined") return;
-  try { window.localStorage.setItem(summaryCacheKey(deckId), JSON.stringify(value)); } catch { /* Storage may be unavailable in private mode. */ }
+  try { window.localStorage.setItem(summaryCacheKey(deckId, mode), JSON.stringify(value)); } catch { /* Storage may be unavailable in private mode. */ }
 }
 
 function summaryStateFromCache(cache: CachedSummary): SummaryState {
   return cache.partial ? { status: "partial", summary: cache.summary, note: "Một số slide có độ tin cậy thấp." } : { status: "ready", summary: cache.summary };
+}
+
+function dispatchSummaryRequest(documentId: string, mode: SummaryMode, regenerate = false) {
+  window.dispatchEvent(new CustomEvent("vlearn-generate-summary", { detail: { documentId, mode, regenerate } }));
 }
 
 function PreloadedLibraryScreen({ days, onToggleDay, onOpenWorkspace }: { days: Day[]; onToggleDay: (dayId: string) => void; onOpenWorkspace: (selection: Selection) => void }) {
@@ -572,8 +602,8 @@ function FixedSlideDeckPreview({ deck, onPageCount, onTextSelect, pageRefs, acti
   function handleMouseUp() {
     if (!onTextSelect) return;
     const selection = window.getSelection();
-    const text = selection?.toString().trim();
-    if (!selection || !text || !selection.rangeCount) return;
+    const rawText = selection?.toString().trim();
+    if (!selection || !rawText || !selection.rangeCount) return;
     const range = selection.getRangeAt(0);
     const pageFromNode = (node: Node | null) => {
       const element = node instanceof Element ? node : node?.parentElement;
@@ -583,9 +613,13 @@ function FixedSlideDeckPreview({ deck, onPageCount, onTextSelect, pageRefs, acti
     const startPage = pageFromNode(range.startContainer);
     const endPage = pageFromNode(range.endContainer);
     if (!startPage || !endPage) return;
-    const spanRects = Array.from(stackRef.current?.querySelectorAll<HTMLElement>(".fixed-slide-select-span") ?? [])
-      .filter((span) => range.intersectsNode(span))
-      .map((span) => span.getBoundingClientRect());
+    const selectedSpans = Array.from(stackRef.current?.querySelectorAll<HTMLElement>(".fixed-slide-select-span") ?? [])
+      .filter((span) => range.intersectsNode(span));
+    const text = selectedSpans.length
+      ? cleanSelectedSpanText(selectedSpans.map((span) => span.textContent ?? ""), deck.extraction.removedRepeatedText)
+      : rawText;
+    if (!text) return;
+    const spanRects = selectedSpans.map((span) => span.getBoundingClientRect());
     const rect = spanRects.length ? {
       left: Math.min(...spanRects.map((item) => item.left)),
       top: Math.min(...spanRects.map((item) => item.top)),
@@ -621,16 +655,21 @@ const SUMMARY_COPY = {
   partial: "Một số slide ít text; hãy mở citation để đối chiếu slide gốc.",
 };
 
-function FixedSummarySurface({ document, onGenerateSummary, onJumpToSlide }: { document: DocumentRecord; onGenerateSummary: () => void; onJumpToSlide?: (slide: number) => void }) {
+function SummaryModePicker({ mode, onChange }: { mode: SummaryMode; onChange: (mode: SummaryMode) => void }) {
+  return <label className="summary-mode-control"><span>Tiêu chí</span><select className="select-input" value={mode} onChange={(event) => onChange(event.target.value as SummaryMode)} aria-label="Tiêu chí Summary">{SUMMARY_MODES.map((item) => <option key={item.value} value={item.value}>{item.label} · {item.description}</option>)}</select></label>;
+}
+
+function FixedSummarySurface({ document, onGenerateSummary, onJumpToSlide }: { document: DocumentRecord; onGenerateSummary: SummaryRequest; onJumpToSlide?: (slide: number) => void }) {
   const state = document.summaryState;
-  if (state.status === "idle") return <div className="fixed-summary-empty"><Sparkle size={34} weight="fill" /><h2>{SUMMARY_COPY.idleTitle} {document.deck.title}</h2><p>{SUMMARY_COPY.idleText}</p><button className="primary-button" onClick={onGenerateSummary}><Sparkle size={17} weight="fill" /> {SUMMARY_COPY.idleButton}</button></div>;
+  const [mode, setMode] = useState<SummaryMode>("balanced");
+  if (state.status === "idle") return <div className="fixed-summary-empty"><Sparkle size={34} weight="fill" /><h2>{SUMMARY_COPY.idleTitle} {document.deck.title}</h2><p>{SUMMARY_COPY.idleText}</p><SummaryModePicker mode={mode} onChange={setMode} /><button className="primary-button" onClick={() => onGenerateSummary(mode)}><Sparkle size={17} weight="fill" /> {SUMMARY_COPY.idleButton}</button></div>;
   if (state.status === "loading") return <div className="fixed-summary-empty"><CircleNotch size={28} className="spin" /><h2>{SUMMARY_COPY.loading}</h2><p>{SUMMARY_COPY.loadingText}</p></div>;
-  if (state.status === "error") return <div className="fixed-summary-empty"><Info size={32} /><h2>{SUMMARY_COPY.error}</h2><p>{state.message}</p><button className="secondary-button" onClick={onGenerateSummary}>{SUMMARY_COPY.retry}</button></div>;
+  if (state.status === "error") return <div className="fixed-summary-empty"><Info size={32} /><h2>{SUMMARY_COPY.error}</h2><p>{state.message}</p><SummaryModePicker mode={mode} onChange={setMode} /><button className="secondary-button" onClick={() => onGenerateSummary(mode, true)}>{SUMMARY_COPY.retry}</button></div>;
 
   const summary = state.summary;
   const jumpToSlide = onJumpToSlide ?? ((page: number) => window.dispatchEvent(new CustomEvent("vlearn-jump-slide", { detail: page })));
   const citation = (page: number) => <button className="summary-citation" onClick={() => jumpToSlide(page)}>[Slide {String(page).padStart(2, "0")}]</button>;
-  return <div className="fixed-summary"><div className="fixed-summary-head"><div><p className="eyebrow">SUMMARY · {document.deck.deckId.toUpperCase()}</p><h2>{document.deck.title}</h2></div><span className={cn("status-badge", state.status === "partial" && "status-review")}>{state.status === "partial" ? "Low-confidence" : "Gemini ready"}</span></div>{summary.sections.map((section) => <section className="fixed-summary-section" key={section.id}><h3>{section.heading}</h3>{section.points.map((point) => <div className="fixed-summary-point" key={point.id}><p>{point.text}</p><div className="summary-citations">{point.pages.map((page) => <span key={page}>{citation(page)}</span>)}{point.confidence === "low" && <span className="summary-low-label">Low confidence</span>}</div></div>)}</section>)}{summary.unclassified.length > 0 && <section className="fixed-summary-section"><h3>{UNCLASSIFIED_COPY}</h3>{summary.unclassified.map((point) => <div className="fixed-summary-point" key={point.id}><p>{point.text}</p><div className="summary-citations">{point.pages.map((page) => <span key={page}>{citation(page)}</span>)}</div></div>)}</section>}<p className="summary-disclaimer"><Info size={15} /> Bản tóm tắt được trích xuất tự động từ text của slide. Đối với slide chứa hình ảnh hoặc code phức tạp, tôi khuyến nghị bạn click vào link để xem slide gốc.</p><small className="summary-generated">Model: {summary.model} · {new Date(summary.generatedAt).toLocaleString("vi-VN")}</small></div>;
+  return <div className="fixed-summary"><div className="fixed-summary-head"><div><p className="eyebrow">SUMMARY · {document.deck.deckId.toUpperCase()}</p><h2>{document.deck.title}</h2></div><div className="fixed-summary-head-actions"><SummaryModePicker mode={mode} onChange={setMode} /><button className="secondary-button" onClick={() => onGenerateSummary(mode, true)}><Sparkle size={16} weight="fill" /> Tóm tắt lại</button><span className={cn("status-badge", state.status === "partial" && "status-review")}>{state.status === "partial" ? "Low-confidence" : "Gemini ready"}</span></div></div>{summary.sections.map((section) => <section className="fixed-summary-section" key={section.id}><h3>{section.heading}</h3>{section.points.map((point) => <div className="fixed-summary-point" key={point.id}><p>{point.text}</p><div className="summary-citations">{point.pages.map((page) => <span key={page}>{citation(page)}</span>)}{point.confidence === "low" && <span className="summary-low-label">Low confidence</span>}</div></div>)}</section>)}{summary.unclassified.length > 0 && <section className="fixed-summary-section"><h3>{UNCLASSIFIED_COPY}</h3>{summary.unclassified.map((point) => <div className="fixed-summary-point" key={point.id}><p>{point.text}</p><div className="summary-citations">{point.pages.map((page) => <span key={page}>{citation(page)}</span>)}</div></div>)}</section>}<p className="summary-disclaimer"><Info size={15} /> Bản tóm tắt được trích xuất tự động từ text của slide. Đối với slide chứa hình ảnh hoặc code phức tạp, tôi khuyến nghị bạn click vào link để xem slide gốc.</p><small className="summary-generated">Model: {summary.model} · {new Date(summary.generatedAt).toLocaleString("vi-VN")}</small></div>;
 }
 
 function LegacyFixedSummarySurface({ document, onGenerateSummary, onJumpToSlide }: { document: DocumentRecord; onGenerateSummary: () => void; onJumpToSlide?: (slide: number) => void }) {
@@ -649,9 +688,9 @@ function SummarySurface({ document, onOpenReview }: { document: DocumentRecord; 
   return <div className="summary-surface"><div className="summary-surface-head"><div><p className="eyebrow">SUMMARY</p><h2>{document.fileName}</h2></div><span className={cn("status-badge", document.summaryApproved && "is-approved")}>{document.summaryApproved ? "Đã lưu" : "Draft"}</span></div><div className="summary-source"><Info size={17} /><span>{document.summaryDraft || "Summary chưa được sinh từ text layer."}</span></div><div className="summary-read-copy">{document.summaryNote || "Mở màn Review summary để chỉnh sửa và validate nội dung trước khi upsert."}</div><button className="secondary-button" onClick={onOpenReview}><Sparkle size={17} weight="fill" /> Mở Review summary</button></div>;
 }
 
-function DocumentSurface({ document, summarySelected, onOpenReview, onGenerateSummary, onJumpToSlide, page, totalPages, onPageCount, onTextSelect, pageRefs, activeSlide }: { document: DocumentRecord | null; summarySelected: boolean; onOpenReview: () => void; onGenerateSummary?: () => void; onJumpToSlide?: (slide: number) => void; page: number; totalPages: number; onPageCount?: (count: number) => void; onTextSelect?: (selection: TextSelectionContext) => void; pageRefs: React.MutableRefObject<Map<number, HTMLElement>>; activeSlide?: number }) {
+function DocumentSurface({ document, summarySelected, onOpenReview, onGenerateSummary, onJumpToSlide, page, totalPages, onPageCount, onTextSelect, pageRefs, activeSlide }: { document: DocumentRecord | null; summarySelected: boolean; onOpenReview: () => void; onGenerateSummary?: SummaryRequest; onJumpToSlide?: (slide: number) => void; page: number; totalPages: number; onPageCount?: (count: number) => void; onTextSelect?: (selection: TextSelectionContext) => void; pageRefs: React.MutableRefObject<Map<number, HTMLElement>>; activeSlide?: number }) {
   if (!document) return <div className="workspace-empty"><BookOpen size={42} /><h2>Chọn một học liệu</h2><p>Chọn Day, tài liệu hoặc Summary ở bên trái để bắt đầu.</p></div>;
-  const requestSummary = onGenerateSummary ?? (() => window.dispatchEvent(new CustomEvent("vlearn-generate-summary", { detail: document.id })));
+  const requestSummary: SummaryRequest = onGenerateSummary ?? ((mode, regenerate) => dispatchSummaryRequest(document.id, mode, regenerate));
   return summarySelected ? <FixedSummarySurface document={document} onGenerateSummary={requestSummary} onJumpToSlide={onJumpToSlide} /> : <div className="document-page document-page-all"><div className="document-page-meta"><span>{totalPages ? `${totalPages} slides` : "Loading slides..."}</span><span>{document.fileName}</span></div><FixedSlideDeckPreview deck={document.deck} onPageCount={onPageCount} onTextSelect={onTextSelect} pageRefs={pageRefs} activeSlide={activeSlide} /></div>;
 }
 
@@ -732,20 +771,21 @@ function TutorCollapsedRail({ onExpand }: { onExpand: () => void }) {
 }
 
 function ViewerToolbar({ label, page, totalPages, onPrevious, onNext, onCollapse }: { label: string; page: number; totalPages: number; onPrevious: () => void; onNext: () => void; onCollapse: () => void }) {
-  const unavailable = () => window.alert("Chức năng này chưa nằm trong phạm vi demo.");
-  return <div className="viewer-toolbar"><div className="viewer-tools"><button className="tool-button is-active"><BookOpen size={16} /> {label}</button><button className="tool-button" onClick={unavailable}><Pen size={16} /> Bút</button><button className="tool-button" onClick={unavailable}><Highlighter size={16} /> Highlight</button><button className="tool-button icon-only" onClick={unavailable} aria-label="Thao tác khác"><DotsThree size={19} weight="bold" /></button></div><span className="toolbar-divider" /><span className="page-note">{totalPages ? `Trang ${page} / ${totalPages}` : "Đang xác định số trang"}</span><div className="zoom-tools"><button className="mini-tool" onClick={unavailable}>−</button><strong>100%</strong><button className="mini-tool" onClick={unavailable}>＋</button><button className="mini-tool" onClick={unavailable} aria-label="Tải xuống"><DownloadSimple size={17} /></button><button className="panel-collapse-button" onClick={onCollapse} aria-label="Thu gọn vùng xem"><CaretLeft size={17} /></button></div></div>;
+  const [notice, setNotice] = useState("");
+  const unavailable = () => setNotice("Chức năng này chưa nằm trong phạm vi demo.");
+  return <div className="viewer-toolbar"><div className="viewer-tools"><button className="tool-button is-active"><BookOpen size={16} /> {label}</button><button className="tool-button" onClick={unavailable}><Pen size={16} /> Bút</button><button className="tool-button" onClick={unavailable}><Highlighter size={16} /> Highlight</button><button className="tool-button icon-only" onClick={unavailable} aria-label="Thao tác khác"><DotsThree size={19} weight="bold" /></button></div><span className="toolbar-divider" /><span className="page-note">{totalPages ? `Trang ${page} / ${totalPages}` : "Đang xác định số trang"}</span>{notice && <span className="toolbar-status" role="status" aria-live="polite">{notice}</span>}<div className="zoom-tools"><button className="mini-tool" onClick={unavailable}>−</button><strong>100%</strong><button className="mini-tool" onClick={unavailable}>＋</button><button className="mini-tool" onClick={unavailable} aria-label="Tải xuống"><DownloadSimple size={17} /></button><button className="panel-collapse-button" onClick={onCollapse} aria-label="Thu gọn vùng xem"><CaretLeft size={17} /></button></div></div>;
 }
 
 function ViewerFooter({ page, totalPages, onPrevious, onNext }: { page: number; totalPages: number; onPrevious: () => void; onNext: () => void }) {
   return <div className="viewer-footer"><button className="mini-tool" onClick={onPrevious} disabled={page <= 1}><CaretLeft size={18} /></button><span>Trang <strong>{page}</strong>{totalPages ? ` / ${totalPages}` : ""}</span><button className="mini-tool" onClick={onNext} disabled={!totalPages || page >= totalPages}><CaretRight size={18} /></button></div>;
 }
 
-function SummaryPane({ document, onOpenReview: _onOpenReview, onGenerateSummary, onJumpToSlide, onCollapse }: { document: DocumentRecord | null; onOpenReview: () => void; onGenerateSummary?: () => void; onJumpToSlide?: (slide: number) => void; onCollapse: () => void }) {
-  const requestSummary = document ? onGenerateSummary ?? (() => window.dispatchEvent(new CustomEvent("vlearn-generate-summary", { detail: document.id }))): undefined;
+function SummaryPane({ document, onOpenReview: _onOpenReview, onGenerateSummary, onJumpToSlide, onCollapse }: { document: DocumentRecord | null; onOpenReview: () => void; onGenerateSummary?: SummaryRequest; onJumpToSlide?: (slide: number) => void; onCollapse: () => void }) {
+  const requestSummary: SummaryRequest | undefined = document ? onGenerateSummary ?? ((mode, regenerate) => dispatchSummaryRequest(document.id, mode, regenerate)) : undefined;
   return <section className="content-pane summary-pane"><div className="summary-pane-head"><div><span className="summary-pane-kicker"><Sparkle size={15} weight="fill" /> Summary</span><small>{document?.summaryState.status === "ready" ? "Gemini ready" : "Cần tạo summary"}</small></div><button className="panel-collapse-button" onClick={onCollapse} aria-label="Thu gọn Summary"><CaretRight size={17} /></button></div><div className="summary-pane-scroll">{document && requestSummary ? <FixedSummarySurface document={document} onGenerateSummary={requestSummary} onJumpToSlide={onJumpToSlide} /> : <div className="workspace-empty"><Sparkle size={32} /><h2>Chưa có Summary</h2><p>Chọn tài liệu ở cột Học liệu để xem Summary.</p></div>}</div></section>;
 }
 
-function WorkspaceScreen({ days, selection, onBack, onToggleDay, onSelect, onOpenSummaryReview: _onOpenSummaryReview, onGenerateSummary }: { days: Day[]; selection: Selection | null; onBack: () => void; onToggleDay: (dayId: string) => void; onSelect: (selection: Selection) => void; onOpenSummaryReview: () => void; onGenerateSummary?: (documentId: string) => void }) {
+function WorkspaceScreen({ days, selection, onBack, onToggleDay, onSelect, onOpenSummaryReview: _onOpenSummaryReview, onGenerateSummary }: { days: Day[]; selection: Selection | null; onBack: () => void; onToggleDay: (dayId: string) => void; onSelect: (selection: Selection) => void; onOpenSummaryReview: () => void; onGenerateSummary?: (documentId: string, mode?: SummaryMode, regenerate?: boolean) => void }) {
   const [splitMode, setSplitMode] = useState(false);
   const [materialsCollapsed, setMaterialsCollapsed] = useState(false);
   const [viewerCollapsed, setViewerCollapsed] = useState(false);
@@ -761,7 +801,8 @@ function WorkspaceScreen({ days, selection, onBack, onToggleDay, onSelect, onOpe
   const pageRefs = useRef<Map<number, HTMLElement>>(new Map());
   const dragState = useRef<{ target: "materials" | "tutor" | "summary"; x: number; value: number; width: number } | null>(null);
   const document = useMemo(() => days.flatMap((day) => day.documents).find((item) => item.id === selection?.docId) ?? null, [days, selection?.docId]);
-  const onOpenSummaryReview = () => { if (document) { if (onGenerateSummary) onGenerateSummary(document.id); else window.dispatchEvent(new CustomEvent("vlearn-generate-summary", { detail: document.id })); } };
+  const requestSummary: SummaryRequest | undefined = document && onGenerateSummary ? (mode, regenerate) => onGenerateSummary(document.id, mode, regenerate) : undefined;
+  const onOpenSummaryReview = () => { if (document) { if (requestSummary) requestSummary("balanced"); else dispatchSummaryRequest(document.id, "balanced"); } };
   const handlePageCount = useCallback((count: number) => setTotalPages(count), []);
   useEffect(() => { setPage(1); setTotalPages(0); setSummaryCollapsed(false); setSelectedContext(null); setAttachedContext(null); }, [document?.id]);
   useEffect(() => {
@@ -890,18 +931,18 @@ export default function Home() {
 
   const selectedDocument = useMemo(() => days.flatMap((day) => day.documents).find((document) => document.id === selection?.docId) ?? null, [days, selection?.docId]);
 
-  async function generateSummary(documentId: string) {
+  async function generateSummary(documentId: string, mode: SummaryMode = "balanced", regenerate = false) {
     const target = days.flatMap((day) => day.documents).find((document) => document.id === documentId);
     if (!target) return;
-    const cached = readCachedSummary(target.deck.deckId);
+    const cached = !regenerate && readCachedSummary(target.deck.deckId, mode);
     if (cached) {
       updateDocument(documentId, { summary: cached.summary, summaryState: summaryStateFromCache(cached) });
       return;
     }
-    if (target.summaryState.status === "loading" || target.summaryState.status === "ready" || target.summaryState.status === "partial") return;
+    if (target.summaryState.status === "loading") return;
     updateDocument(documentId, { summaryState: { status: "loading", stage: "Đang chạy Map stage..." } });
     try {
-      const response = await fetch("/api/summary", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ deckId: target.deck.deckId }) });
+      const response = await fetch("/api/summary", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ deckId: target.deck.deckId, mode }) });
       const data = await response.json().catch(() => null) as { summary?: DeckSummary; partial?: boolean; error?: string } | null;
       if (!response.ok || !data?.summary) {
         const message = data?.error === "no-text" ? "Không có text đủ tin cậy để tóm tắt slide này." : "Hiện tại chức năng tóm tắt đang gặp sự cố, mong bạn thử lại sau.";
@@ -909,7 +950,7 @@ export default function Home() {
         return;
       }
       const partial = data.partial === true;
-      writeCachedSummary(target.deck.deckId, { summary: data.summary, partial });
+      writeCachedSummary(target.deck.deckId, mode, { summary: data.summary, partial });
       updateDocument(documentId, { summary: data.summary, summaryState: partial ? { status: "partial", summary: data.summary, note: "Một số slide có độ tin cậy thấp." } : { status: "ready", summary: data.summary } });
     } catch {
       updateDocument(documentId, { summaryState: { status: "error", reason: "api", message: "Hiện tại chức năng tóm tắt đang gặp sự cố, mong bạn thử lại sau." } });
@@ -922,7 +963,7 @@ export default function Home() {
       ...day,
       documents: day.documents.map((document) => {
         if (document.summaryState.status !== "idle") return document;
-        const cached = readCachedSummary(document.deck.deckId);
+        const cached = readCachedSummary(document.deck.deckId, "balanced");
         if (!cached) return document;
         changed = true;
         return { ...document, summary: cached.summary, summaryState: summaryStateFromCache(cached) };
@@ -933,8 +974,11 @@ export default function Home() {
 
   useEffect(() => {
     function handleSummaryRequest(event: Event) {
-      const documentId = String((event as CustomEvent<string>).detail || "");
-      if (documentId) void generateSummary(documentId);
+      const detail = (event as CustomEvent<string | { documentId?: unknown; mode?: unknown; regenerate?: unknown }>).detail;
+      const documentId = typeof detail === "string" ? detail : String(detail?.documentId || "");
+      const mode = detail && typeof detail === "object" && (detail.mode === "deep" || detail.mode === "review") ? detail.mode : "balanced";
+      const regenerate = typeof detail === "object" && detail?.regenerate === true;
+      if (documentId) void generateSummary(documentId, mode, regenerate);
     }
     window.addEventListener("vlearn-generate-summary", handleSummaryRequest);
     return () => window.removeEventListener("vlearn-generate-summary", handleSummaryRequest);

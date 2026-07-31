@@ -1,0 +1,360 @@
+{
+  "metadata": {
+    "total_cases": 44,
+    "target_quality_bar": ">=80% pass rate, khong co case lop 1 bi hallucinate"
+  },
+  "cases": [
+    {
+      "id": "GS-001",
+      "category": "L1 Nguon su that (4 case)",
+      "source": "T0408",
+      "test_scenario": "Bắt buộc grounding: mọi câu tóm tắt phải trace được về text slide nguồn. Nếu không có trong slide thì ghi rõ \"Thông tin này không có trong tài liệu slide.\"",
+      "user_input": "(Trang 14, đoạn được chọn: \"tóm tắt các chủ đề chính của slide day05-lecture-slides-batch03.pdf này\")\ntóm tắt các chủ đề chính của slide day05-lecture-slides-batch03.pdf này",
+      "baseline_response": "Rất tiếc, tôi không thể tìm thấy tệp tin hoặc nội dung chi tiết của `day05-lecture-slides-batch03.pdf` trong hệ thống hiện tại để tóm tắt các chủ đề chính cho bạn.\n\nBạn có thể cung cấp thêm thông tin hoặc tên cụ thể của chủ đề/khái niệm bạn đang muốn tìm hiểu trong ngày học này không? Tôi sẽ hỗ trợ bạn giải đáp ngay khi có nội dung cụ thể."
+    },
+    {
+      "id": "GS-002",
+      "category": "L1 Nguon su that (4 case)",
+      "source": "T0443",
+      "test_scenario": "Bắt buộc grounding: mọi câu tóm tắt phải trace được về text slide nguồn. Nếu không có trong slide thì ghi rõ \"Thông tin này không có trong tài liệu slide.\"",
+      "user_input": "(Trang 57, đoạn được chọn: \"tóm tắt toàn bộ slide\")\ntóm tắt toàn bộ slide",
+      "baseline_response": "Rất tiếc, hiện tại hệ thống tìm kiếm không trả về tóm tắt tổng quát cho toàn bộ slide của ngày học hôm nay. Để có thể hỗ trợ bạn tốt nhất, bạn vui lòng cho biết chủ đề cụ thể hoặc khái niệm nào bạn đang quan tâm hoặc muốn làm rõ, tôi sẽ hỗ trợ bạn chi tiết dựa trên nội dung bài giảng."
+    },
+    {
+      "id": "GS-003",
+      "category": "L1 Nguon su that (4 case)",
+      "source": "T0938",
+      "test_scenario": "Bắt buộc grounding: mọi câu tóm tắt phải trace được về text slide nguồn. Nếu không có trong slide thì ghi rõ \"Thông tin này không có trong tài liệu slide.\"",
+      "user_input": "(Trang 42, đoạn được chọn: \"tóm tắt tất cả nội dung cần note lại đầy đủ\")\ntóm tắt tất cả nội dung cần note lại đầy đủ",
+      "baseline_response": "Rất tiếc, hiện tại tôi không thể truy cập nội dung cụ thể từ slide của ngày hôm nay để tóm tắt cho bạn. Nếu bạn có câu hỏi cụ thể về một khái niệm hoặc phần nội dung nào đó, hãy chia sẻ, tôi sẽ sẵn lòng giải thích dựa trên dữ liệu bài học."
+    },
+    {
+      "id": "GS-004",
+      "category": "L1 Nguon su that (4 case)",
+      "source": "T1258",
+      "test_scenario": "Thông báo rõ slide không chứa văn bản đọc được và khuyên học viên xem trực tiếp hình ảnh/sơ đồ trên slide gốc.",
+      "user_input": "(Trang 33, đoạn được chọn: \"tóm tắt slide này\")\ntóm tắt slide này",
+      "baseline_response": "Rất tiếc là tôi đã tra cứu trong tài liệu nhưng chưa tìm thấy nội dung cụ thể của **Trang 33**. Kết quả tìm kiếm chỉ hiển thị các trang khác có nhắc đến con số \"33\" (như mức điểm 33% trong các bài kiểm tra đánh giá AI trên trang 60 và 72).\n\nBạn có thể cho tôi biết tiêu đề của slide đó hoặc một vài từ khóa có trên trang để tôi tìm kiếm lại chính xác hơn không?"
+    },
+    {
+      "id": "GS-005",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "source": "T0649",
+      "test_scenario": "Nhận diện được thông tin/số trang học viên yêu cầu vượt quá giới hạn tài liệu hiện có, từ chối phần vượt quá và/hoặc đề xuất tóm tắt phần dữ liệu hợp lệ hiện có.",
+      "user_input": "(Trang 37, đoạn được chọn: \"tóm tắt nội dung chính trong slide này\")\ntóm tắt nội dung chính trong slide này",
+      "baseline_response": "Xin lỗi bạn, tôi không tìm thấy nội dung cụ thể cho slide 37 trong tài liệu hiện có. Bạn có thể cung cấp thêm thông tin hoặc tiêu đề của slide đó để tôi có thể hỗ trợ bạn chính xác hơn không?"
+    },
+    {
+      "id": "GS-006",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "source": "T0905",
+      "test_scenario": "Nhận diện được thông tin/số trang học viên yêu cầu vượt quá giới hạn tài liệu hiện có, từ chối phần vượt quá và/hoặc đề xuất tóm tắt phần dữ liệu hợp lệ hiện có.",
+      "user_input": "(Trang 50, đoạn được chọn: \"tóm gọn những nội dung quan trọng nhất trong day 04 này\")\ntóm gọn những nội dung quan trọng nhất trong day 04 này",
+      "baseline_response": "Chào bạn, hiện tại tôi không tìm thấy tài liệu tổng hợp đầy đủ cho toàn bộ nội dung của Ngày 04 trong slide được cung cấp.\n\nNếu bạn có thắc mắc về một khái niệm cụ thể nào đó đã học trong buổi này (ví dụ: các kỹ thuật tối ưu hóa prompt, cơ chế gọi tool của agent, hoặc cách xử lý ngữ cảnh), hãy cho tôi biết tên khái niệm hoặc đoạn văn bản cụ thể mà bạn muốn tìm hiểu. Tôi sẽ tra cứu chi tiết và giải thích giúp bạn ngay nhé."
+    },
+    {
+      "id": "GS-007",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "source": "SYNTHETIC-L2-ERR",
+      "test_scenario": "Phản hồi thông báo lỗi tường minh khi dữ liệu slide không tồn tại/chưa nạp.",
+      "user_input": "tóm tắt toàn bộ slide Day 1",
+      "baseline_response": "[Synthetic — giả lập khi API/hệ thống gặp lỗi kết nối]"
+    },
+    {
+      "id": "GS-008",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "source": "T0122",
+      "test_scenario": "Nhận diện được thông tin/số trang học viên yêu cầu vượt quá giới hạn tài liệu hiện có, từ chối phần vượt quá và/hoặc đề xuất tóm tắt phần dữ liệu hợp lệ hiện có.",
+      "user_input": "(Trang 5, đoạn được chọn: \"tóm tắt hết slice trong vài câu đi\")\ntóm tắt hết slice trong vài câu đi",
+      "baseline_response": "Rất tiếc là mình đã thử tìm kiếm nội dung tổng quan từ các slide (với các từ khóa như \"giới thiệu\", \"mục tiêu\", \"tóm tắt\") nhưng hệ thống chưa trả về kết quả cụ thể để mình có thể khái quát lại toàn bộ bài học cho bạn.\n\nVì mình không có quyền truy cập trực tiếp vào toàn bộ tệp tài liệu mà phải thông qua tìm kiếm từ khóa, bạn có thể giúp mình bằng cách:\n1. Cho mình biết **chủ đề chính** của buổi họ"
+    },
+    {
+      "id": "GS-009",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "source": "T0058",
+      "test_scenario": "Từ chối rõ ràng các yêu cầu ngoài phạm vi (như giải bài tập, tạo quiz, hỏi thông tin ngoài lề) một cách lịch sự, và định hướng học viên quay lại ôn tập kiến thức trong slide.",
+      "user_input": "(Trang 66, đoạn được chọn: \"xem bài tập thực hành lab day 2 chiều nay ở đaau\")\nxem bài tập thực hành lab day 2 chiều nay ở đaau",
+      "baseline_response": "Chào bạn, hiện tại trong tài liệu slide của ngày học hôm nay không đề cập cụ thể vị trí lưu trữ bài tập thực hành Lab Day 2. Bạn vui lòng kiểm tra trên trang chủ khóa học của hệ thống quản lý học tập (LMS) hoặc thông báo từ giảng viên để biết chính xác nơi tải bài tập nhé."
+    },
+    {
+      "id": "GS-010",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "source": "T0849",
+      "test_scenario": "Từ chối rõ ràng các yêu cầu ngoài phạm vi (như giải bài tập, tạo quiz, hỏi thông tin ngoài lề) một cách lịch sự, và định hướng học viên quay lại ôn tập kiến thức trong slide.",
+      "user_input": "(Trang 9, đoạn được chọn: \"TẠO QUIZ ĐỂ TÔI HIỂU RÕ VÀ ÔN LẠI TOÀN BỘ SLIDE NÀY\")\nTẠO QUIZ ĐỂ TÔI HIỂU RÕ VÀ ÔN LẠI TOÀN BỘ SLIDE NÀY",
+      "baseline_response": "Để giúp bạn ôn tập các kiến thức cốt lõi của bài học hôm nay về hành trình từ Chatbot đến Agentic Agent và mô hình ReAct [trang 1, 3], tôi đã soạn một câu hỏi ngắn dưới đây:\n\n**Câu hỏi:** Trong ngữ cảnh của bài học, sự khác biệt căn bản nhất về cách thức hoạt động giữa một Chatbot thông thường và một Agentic Agent (sử dụng ReAct pattern) là gì?\n\nBạn có thể giải thích ngắn gọn dựa trên cách Agent t"
+    },
+    {
+      "id": "GS-011",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "source": "T0014",
+      "test_scenario": "Từ chối rõ ràng các yêu cầu ngoài phạm vi (như giải bài tập, tạo quiz, hỏi thông tin ngoài lề) một cách lịch sự, và định hướng học viên quay lại ôn tập kiến thức trong slide.",
+      "user_input": "(Trang 81, đoạn được chọn: \"Key takeaways — 5 ý để mang về\n1. LLM = cỗ máy Transformer đoán token tiếp theo từ context — mọi thứ khác là hệ quả.\n2. Từ cỗ máy đoán chữ thành trợ lý: pre-training → SFT → căn chỉnh → luyện đề tự chấm & được nghĩ kỹ.\n3. Model có giới hạn bẩm sinh: bong bóng thời gian, nói chắc như đúng rồi, bàn là\")\nGiải thích đoạn bôi đen ở Trang 81: \"Key takeaways — 5 ý để mang về\n1",
+      "baseline_response": "Đoạn nội dung bạn trích dẫn từ trang 81 tóm tắt các nguyên lý cốt lõi khi làm việc với LLM:\n\n1.  **Bản chất của LLM:** LLM thực chất là các mô hình Transformer được huấn luyện để dự đoán token (đơn vị văn bản) tiếp theo dựa trên ngữ cảnh được cung cấp. Mọi khả năng \"thông minh\" khác mà bạn thấy chỉ là kết quả phái sinh từ quá trình dự đoán xác suất này.\n2.  **Quá trình chuyển hóa thành trợ lý:** Để một mô hình dự đoán từ ngữ trở thành một trợ lý hữu ích, nó cần trải qua các giai đoạn: huấn luyện"
+    },
+    {
+      "id": "GS-012",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "source": "T1063",
+      "test_scenario": "Từ chối lịch sự nếu nhận định yêu cầu thuộc tài liệu không có sẵn (Ngày 3), HOẶC giải thích chính xác nội dung kiến thức được bôi đen tại slide.",
+      "user_input": "(Trang 13, đoạn được chọn: \"Mọi thứ phải 100% deterministic: mỗi sai sót đều rất đắt\n□ Chi phí latency không chấp nhận được: loop 3–5 bước là đã quá chậm\n□✓ Nguyên tắc: luôn benchmark rule / workflow / chatbot trước khi mở agent\nloop\nGiảng viên (VinUni) AICB · Ngày 3 17/03/2026 9 / 47\")\nGiải thích đoạn bôi đen ở Trang 13.",
+      "baseline_response": "Đoạn nội dung này nhấn mạnh các yêu cầu và nguyên tắc quan trọng trước khi bạn quyết định triển khai một hệ thống Agent (hệ thống có khả năng tự động thực hiện các vòng lặp suy luận và hành động) thay vì một chatbot thông thường:\n\n*   **Tính xác định (100% deterministic):** Trong các ứng dụng quan trọng, hệ thống cần đưa ra kết quả nhất quán và đáng tin cậy. Nếu agent hoạt động theo kiểu \"hộp đen\" với các bước suy luận ngẫu nhiên, mọi sai sót có thể dẫn đến hậu quả rất đắt giá.\n*   **Chi phí độ"
+    },
+    {
+      "id": "GS-013",
+      "category": "L4 Dac thu domain (4 case)",
+      "source": "T0845",
+      "test_scenario": "Giữ nguyên thuật ngữ tiếng Anh gốc và đặt chú giải ngắn trong ngoặc — không tự ý dịch nghĩa thô kệch.",
+      "user_input": "(Trang 15, đoạn được chọn: \"Từ Anthropic: Agent Patterns Nên Tăng Dần Theo Nhu Cầu\nAugmented\nLLM\nPrompt +\ndocs + tools\nPrompt\nChaining\nBước nối\ntiếp rõ ràng\nRouting\nChọn path\n/ specialist\nOrchestrator\nWorker\nPhân việc\nrồi tổng hợp\nAgent\nTự quyết nhiều bước\nBắt đầu từ cấu trúc đơn giản nhất đủ dùng.",
+      "baseline_response": "Đoạn này từ Anthropic đưa ra lời khuyên về việc xây dựng các hệ thống AI theo lộ trình tăng dần độ phức tạp, thay vì áp dụng mô hình Agent (mô hình phức tạp nhất) ngay từ đầu. Nội dung nhấn mạnh việc bắt đầu với cấu trúc đơn giản nhất có thể đáp ứng được nhu cầu công việc [trang 15].\n\nLộ trình tăng dần được đề xuất bao gồm:\n\n1.  **Augmented LLM:** Cung cấp cho mô hình ngữ cảnh bổ sung qua tài liệu"
+    },
+    {
+      "id": "GS-014",
+      "category": "L4 Dac thu domain (4 case)",
+      "source": "T0112",
+      "test_scenario": "Giải thích các khái niệm kỹ thuật một cách dễ hiểu, có chèn link slide gốc và giữ nguyên các thuật ngữ tiếng Anh gốc.",
+      "user_input": "(Trang 28, đoạn được chọn: \"t mặc định là free-form text, khó parse\nprogrammatically. Trong agent pipeline, bạn cần\nJSON/structured data. Các cách tiếp cận (2026):\n■ Structured outputs: ép schema ở tầng\nAPI — cách được khuyến nghị\n■ Prompt-based: “Respond ONLY with\nvalid JSON”\n■ XML tags: <thinking>...</thinking>\nLưu ý: Đã lỗi\")\nGiải thích sờ lai này cho bò cũng hiểu được",
+      "baseline_response": "Chào bạn, mình hiểu rồi! Slide này đang nói về việc làm thế nào để lấy được câu trả lời từ AI theo định dạng mà máy tính có thể \"đọc\" và xử lý được (thay vì chỉ là một đoạn văn bản tự do).\n\nHãy tưởng tượng bạn bảo AI viết một chương trình, nhưng AI lại viết cả một bài văn dài kèm theo mã nguồn. Máy tính sẽ rất vất vả để lọc ra chỗ nào là code, chỗ nào là văn bản. Để giải quyết vấn đề này, slide gợi ý 3 cách:\n\n1.  **Structured outputs (Cách xịn nhất):** Bạn bảo hệ thống (API) rằng: \"Tao cần kết q"
+    },
+    {
+      "id": "GS-015",
+      "category": "L4 Dac thu domain (4 case)",
+      "source": "T0453",
+      "test_scenario": "Giữ nguyên thuật ngữ tiếng Anh gốc và đặt chú giải ngắn trong ngoặc — không tự ý dịch nghĩa thô kệch.",
+      "user_input": "(Trang 17, đoạn được chọn: \"Kiến Trúc Agent: Từ Trong Ra Ngoài\nReasoning\nLLM Core\nPerception\nUser input\nTool results\nAction\nAPI / Search\nFinal answer\nShort-term\nMemory\nContext window\nLong-term\nMemory\nStore / DB\nInput từ môi trường\nState và memory giúp agent không “mất mạch”\n■ Perception: agent nhận text,\ntool output, feedback\n\")\nGiải thích đoạn bôi đen ở Trang 17.",
+      "baseline_response": "Đoạn này mô tả thành phần **Perception (Nhận thức)** trong kiến trúc của một Agent, đóng vai trò là \"cửa ngõ\" để Agent tiếp nhận thông tin từ thế giới bên ngoài.\n\nCụ thể, Perception giúp Agent xử lý các luồng đầu vào khác nhau để duy trì khả năng hoạt động:\n\n*   **User Input:** Các câu lệnh, câu hỏi hoặc yêu cầu trực tiếp từ người dùng.\n*   **Tool Results:** Kết quả trả về sau khi Agent thực thi các công cụ (ví dụ: kết quả từ truy vấn database, kết quả search trên internet, hoặc dữ liệu từ một A"
+    },
+    {
+      "id": "GS-016",
+      "category": "L4 Dac thu domain (4 case)",
+      "source": "T0268",
+      "test_scenario": "Giữ nguyên thuật ngữ tiếng Anh gốc và đặt chú giải ngắn trong ngoặc — không tự ý dịch nghĩa thô kệch.",
+      "user_input": "(Trang 22, đoạn được chọn: \"Memory injection\n■ Chỉ đưa vào facts thật sự cần cho\ntask hiện tại\n■ Ưu tiên recent history hoặc\nrelevant history, không dump toàn\nbộ transcript\n■ Tốt cho support agent, coding\nassistant, tutor nhiều lượt\nCompression\n■ Summarize: tóm tắt phần cũ\n■ Drop: bỏ hẳn phần không còn liên\nquan\n■ Archive: đẩy\")\nGiải thích đoạn bôi đen ở Trang 22.",
+      "baseline_response": "Đoạn bôi đen này giới thiệu hai kỹ thuật quan trọng để tối ưu hóa context window (ngữ cảnh) khi làm việc với các mô hình ngôn ngữ lớn:\n\n1.  **Memory Injection (Cấp dữ liệu bộ nhớ):** Đây là cách chọn lọc thông tin để đưa vào prompt thay vì gửi toàn bộ lịch sử hội thoại dài.\n*   Chỉ nên đưa vào các thông tin (facts) thực sự cần thiết cho tác vụ đang xử lý.\n*   Nên ưu tiên các thông tin gần đây (recent history) hoặc thông tin có liên quan trực tiếp (relevant history).\n*   Kỹ thuật này"
+    },
+    {
+      "id": "GS-017",
+      "category": "Happy path (8 case)",
+      "source": "T0699",
+      "test_scenario": "AI trả về bản tóm tắt phân mục kèm link [Slide XX] clickable, mỗi mục trace được về text slide nguồn. Citation ≥80% chính xác.",
+      "user_input": "(Trang 49, đoạn được chọn: \"tóm tắt toàn bộ slide sau đó đưa ra các ý chính\")\ntóm tắt toàn bộ slide sau đó đưa ra các ý chính",
+      "baseline_response": "Dựa trên nội dung các slide đã tra cứu, bài học ngày hôm nay tập trung vào việc giới thiệu tổng quan về hệ sinh thái Trí tuệ Nhân tạo (AI) và các khái niệm cốt lõi đang dẫn dắt công nghệ hiện nay.\n\nDưới đây là tóm tắt các ý chính:\n\n*   **Hệ sinh thái AI:** Slide làm rõ mối quan hệ phân cấp giữa các khái niệm từ rộng đến hẹp: AI > Machine Learning > Deep Learning > Generative AI > LLM [trang 6].\n*"
+    },
+    {
+      "id": "GS-018",
+      "category": "Happy path (8 case)",
+      "source": "T1019",
+      "test_scenario": "AI trả về bản tóm tắt phân mục kèm link [Slide XX] clickable, mỗi mục trace được về text slide nguồn. Citation ≥80% chính xác.",
+      "user_input": "(Trang 3, đoạn được chọn: \"Tổng hợp toàn bộ những kiên thức chính trong bài này\")\nTổng hợp toàn bộ những kiên thức chính trong bài này",
+      "baseline_response": "Chào bạn, đây là tổng hợp các kiến thức trọng tâm của buổi học về \"AI Product Thinking & Requirements\":\n\n1.  **Tư duy sản phẩm AI**: Cần hiểu rõ sự khác biệt giữa AI product và các phần mềm truyền thống [trang 4]. Bạn cần xác định rõ sản phẩm phục vụ cho ai, mang lại giá trị gì và cách đo lường giá trị đó [trang 4].\n2.  **Yêu cầu kỹ thuật (Requirements Engineering)**: Yêu cầu cho AI được chia thàn"
+    },
+    {
+      "id": "GS-019",
+      "category": "Happy path (8 case)",
+      "source": "T0690",
+      "test_scenario": "AI trả về bản tóm tắt phân mục kèm link [Slide XX] clickable, mỗi mục trace được về text slide nguồn. Citation ≥80% chính xác.",
+      "user_input": "(Trang 6, đoạn được chọn: \"TÓm tắt tài liệu tôi xem nào\")\nTÓm tắt tài liệu tôi xem nào",
+      "baseline_response": "Tài liệu này tập trung vào hai nội dung chính:\n\n1. **Khởi nguồn bài toán (lấy từ các bài học thực tế):** Nhấn mạnh việc không bắt đầu từ AI mà phải dựa trên am hiểu lĩnh vực, xác định quy mô thị trường và định vị giải pháp. Ví dụ, Cursor thành công nhờ tập trung vào mảng mà đội ngũ am hiểu sâu, trong khi các dự án khác thất bại do thị trường quá hẹp hoặc định vị chưa đúng điểm đau [trang 22].\n\n2."
+    },
+    {
+      "id": "GS-020",
+      "category": "Happy path (8 case)",
+      "source": "T1050",
+      "test_scenario": "AI trả về bản tóm tắt phân mục kèm link [Slide XX] clickable, mỗi mục trace được về text slide nguồn. Citation ≥80% chính xác.",
+      "user_input": "(Trang 15, đoạn được chọn: \"tóm tắt lại buổi học này\")\ntóm tắt lại buổi học này",
+      "baseline_response": "Dựa trên nội dung các slide bài giảng, buổi học này tập trung vào các kiến thức nền tảng về LLM, cách tối ưu hóa tương tác với AI và lộ trình phát triển từ mô hình ngôn ngữ đến các hệ thống đại lý (agents). Dưới đây là tóm tắt các nội dung chính:\n\n1.  **Lịch sử và Bản chất AI:** Nhắc lại các cột mốc như báo cáo Lighthill (1973) dẫn đến \"mùa đông AI\" lần thứ nhất [trang 12]. Bài học khẳng định LLM"
+    },
+    {
+      "id": "GS-021",
+      "category": "Happy path (8 case)",
+      "source": "T0897",
+      "test_scenario": "Nhận diện đúng giới hạn tài liệu (vượt quá 29 trang), thông báo từ chối phần vượt quá và chủ động tóm tắt phân mục các kiến thức hợp lệ hiện có kèm trích dẫn [Slide X].",
+      "user_input": "(Trang 83, đoạn được chọn: \"tóm tắt slide này gồm những phần chính gì\")\ntóm tắt slide này gồm những phần chính gì",
+      "baseline_response": "Slide này tập trung vào sự phát triển và phân loại các hệ thống AI hiện nay, với ba phần chính sau:\n\n1. **Ba nhóm AI chính [trang 7]:**\n- **Discriminative AI:** Chuyên về phân loại và dự đoán (ví dụ: lọc spam, nhận diện ảnh).\n- **Generative AI:** Chuyên tạo ra nội dung mới như văn bản, ảnh, code (ví dụ: ChatGPT, Midjourney).\n- **Agentic AI:** Có khả năng tự nhận mục tiêu, lập kế hoạch và"
+    },
+    {
+      "id": "GS-022",
+      "category": "Happy path (8 case)",
+      "source": "T0263",
+      "test_scenario": "AI trả về bản tóm tắt phân mục kèm link [Slide XX] clickable, mỗi mục trace được về text slide nguồn. Citation ≥80% chính xác.",
+      "user_input": "(Trang 3, đoạn được chọn: \"Thiết kế sản phẩm AI\ncho sự không chắc chắn\nTìm vấn đề thật, thiết kế cho lúc AI sai, và cắt vừa đủ scope để một ý tưởng AI có thể chứng\nminh được giá trị thật.\nV I N U N I A I 2 0 K D AY 0 5\nKéo đến trang này để mở note riêng của trang.\nTrang 2 / 39\nday05-lecture-slides-b",
+      "baseline_response": "Việc thiết kế sản phẩm AI cho sự không chắc chắn đòi hỏi tư duy khác biệt so với quản lý sản phẩm thông thường, tập trung vào việc tạo ra sản phẩm đủ thực tế để chứng minh giá trị qua prototype [trang 3]. Nội dung này được tóm tắt qua \"Narrative spine\" với 6 bước chính [trang 3]:\n\n1. **Demo chạy:** AI hoạt động trong một kịch bản lý tưởng (\"ví dụ sạch\").\n2. **User thật:** Xác định người dùng cụ th"
+    },
+    {
+      "id": "GS-023",
+      "category": "Happy path (8 case)",
+      "source": "T0236",
+      "test_scenario": "AI trả về bản tóm tắt phân mục kèm link [Slide XX] clickable, mỗi mục trace được về text slide nguồn. Citation ≥80% chính xác.",
+      "user_input": "(Trang 1, đoạn được chọn: \"Tóm tắt toàn bộ tài liệu này\")\nTóm tắt toàn bộ tài liệu này",
+      "baseline_response": "Tài liệu này tập trung vào việc giới thiệu **Bức tranh tổng quan về AI** (AI Landscape) [trang 5]. Dưới đây là các nội dung chính được tóm tắt:\n\n*   **Phân tầng công nghệ AI [trang 6]:** Tài liệu giải thích mối quan hệ giữa các khái niệm từ rộng đến hẹp:\n*   **AI (Trí tuệ nhân tạo):** Là khái niệm rộng nhất, bao gồm mọi hệ thống có yếu tố \"thông minh\", kể cả các hệ thống dựa trên luật lệ (rule"
+    },
+    {
+      "id": "GS-024",
+      "category": "Happy path (8 case)",
+      "source": "T0728",
+      "test_scenario": "AI trả về bản tóm tắt phân mục kèm link [Slide XX] clickable, mỗi mục trace được về text slide nguồn. Citation ≥80% chính xác.",
+      "user_input": "(Trang 7, đoạn được chọn: \"tóm tắt nội dung của slide\")\ntóm tắt nội dung của slide",
+      "baseline_response": "Dựa trên các trang slide hiện có, nội dung của bài học xoay quanh các chủ đề chính sau:\n\n1.  **Phân định các khái niệm AI**: Slide làm rõ mối quan hệ giữa AI (chiếc ô lớn nhất), Machine Learning (học từ dữ liệu), Deep Learning (mạng nơ-ron nhiều tầng), Generative AI (sinh nội dung mới) và LLM (mô hình ngôn ngữ lớn) [trang 6].\n2.  **Ba nhóm AI chính**:\n*   **Discriminative AI**: Chuyên phân loại và dự đoán (ví dụ: lọc spam, nhận diện ảnh) [trang 7].\n*   **Generative AI**: Chuyên sinh nội"
+    },
+    {
+      "id": "GS-025",
+      "category": "L1 Nguon su that (4 case)",
+      "source": "SYNTHETIC-L1-01",
+      "test_scenario": "Bắt buộc grounding: mọi câu tóm tắt phải trace được về text slide nguồn. Nếu không có trong slide thì ghi rõ \"Thông tin này không có trong tài liệu slide.\"",
+      "user_input": "Trong slide có nói đến thuật toán YOLOv8 không? Tóm tắt giúp mình.",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-026",
+      "category": "L1 Nguon su that (4 case)",
+      "source": "SYNTHETIC-L1-02",
+      "test_scenario": "Bắt buộc grounding: mọi câu tóm tắt phải trace được về text slide nguồn. Nếu không có trong slide thì ghi rõ \"Thông tin này không có trong tài liệu slide.\"",
+      "user_input": "Tóm tắt tiểu sử của Sam Altman dựa trên slide này.",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-027",
+      "category": "L1 Nguon su that (4 case)",
+      "source": "SYNTHETIC-L1-03",
+      "test_scenario": "Thông báo rõ slide không chứa văn bản đọc được và khuyên học viên xem trực tiếp hình ảnh/sơ đồ trên slide gốc.",
+      "user_input": "(Trang 999, đoạn được chọn: \"\")\ntóm tắt slide 999",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-028",
+      "category": "L1 Nguon su that (4 case)",
+      "source": "SYNTHETIC-L1-04",
+      "test_scenario": "Bắt buộc grounding: mọi câu tóm tắt phải trace được về text slide nguồn. Nếu không có trong slide thì ghi rõ \"Thông tin này không có trong tài liệu slide.\"",
+      "user_input": "Slide nhắc đến doanh thu của OpenAI năm 2023 là bao nhiêu?",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-029",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "source": "SYNTHETIC-L2-01",
+      "test_scenario": "Nhận diện được thông tin/số trang học viên yêu cầu vượt quá giới hạn tài liệu hiện có, từ chối phần vượt quá và/hoặc đề xuất tóm tắt phần dữ liệu hợp lệ hiện có.",
+      "user_input": "Tóm tắt slide 100 đến 120",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-030",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "source": "SYNTHETIC-L2-02",
+      "test_scenario": "Nhận diện được thông tin/số trang học viên yêu cầu vượt quá giới hạn tài liệu hiện có, từ chối phần vượt quá và/hoặc đề xuất tóm tắt phần dữ liệu hợp lệ hiện có.",
+      "user_input": "tóm tắt trang cuối cùng của bài học Ngày 5",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-031",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "source": "SYNTHETIC-L2-03",
+      "test_scenario": "Phản hồi thông báo lỗi tường minh khi dữ liệu slide không tồn tại/chưa nạp.",
+      "user_input": "tóm tắt",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-032",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "source": "SYNTHETIC-L2-04",
+      "test_scenario": "Nhận diện được thông tin/số trang học viên yêu cầu vượt quá giới hạn tài liệu hiện có, từ chối phần vượt quá và/hoặc đề xuất tóm tắt phần dữ liệu hợp lệ hiện có.",
+      "user_input": "Trang 35 nói về cái gì?",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-033",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "source": "SYNTHETIC-L3-01",
+      "test_scenario": "Từ chối rõ ràng các yêu cầu ngoài phạm vi (như giải bài tập, tạo quiz, hỏi thông tin ngoài lề) một cách lịch sự, và định hướng học viên quay lại ôn tập kiến thức trong slide.",
+      "user_input": "Cho mình xin code Python đầy đủ để train một mô hình LLM từ đầu.",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-034",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "source": "SYNTHETIC-L3-02",
+      "test_scenario": "Từ chối rõ ràng các yêu cầu ngoài phạm vi (như giải bài tập, tạo quiz, hỏi thông tin ngoài lề) một cách lịch sự, và định hướng học viên quay lại ôn tập kiến thức trong slide.",
+      "user_input": "Bao giờ thì lớp mình thi giữa kỳ vậy AI?",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-035",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "source": "SYNTHETIC-L3-03",
+      "test_scenario": "Từ chối rõ ràng các yêu cầu ngoài phạm vi (như giải bài tập, tạo quiz, hỏi thông tin ngoài lề) một cách lịch sự, và định hướng học viên quay lại ôn tập kiến thức trong slide.",
+      "user_input": "Tôi quên mật khẩu đăng nhập LMS rồi, làm sao để reset?",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-036",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "source": "SYNTHETIC-L3-04",
+      "test_scenario": "Từ chối rõ ràng các yêu cầu ngoài phạm vi (như giải bài tập, tạo quiz, hỏi thông tin ngoài lề) một cách lịch sự, và định hướng học viên quay lại ôn tập kiến thức trong slide.",
+      "user_input": "Tạo cho mình 10 câu trắc nghiệm khó nhất về slide này để mình làm thử",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-037",
+      "category": "L4 Dac thu domain (4 case)",
+      "source": "SYNTHETIC-L4-01",
+      "test_scenario": "Giữ nguyên thuật ngữ tiếng Anh gốc và đặt chú giải ngắn trong ngoặc — không tự ý dịch nghĩa thô kệch.",
+      "user_input": "Giải thích khái niệm RLHF trong slide",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-038",
+      "category": "L4 Dac thu domain (4 case)",
+      "source": "SYNTHETIC-L4-02",
+      "test_scenario": "Giữ nguyên thuật ngữ tiếng Anh gốc và đặt chú giải ngắn trong ngoặc — không tự ý dịch nghĩa thô kệch.",
+      "user_input": "Dịch từ Prompt Chaining sang tiếng Việt cho dễ hiểu đi",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-039",
+      "category": "L4 Dac thu domain (4 case)",
+      "source": "SYNTHETIC-L4-03",
+      "test_scenario": "Giải thích các khái niệm kỹ thuật một cách dễ hiểu, có chèn link slide gốc và giữ nguyên các thuật ngữ tiếng Anh gốc.",
+      "user_input": "Context Window nghĩa là gì? Giải thích đơn giản thôi",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-040",
+      "category": "L4 Dac thu domain (4 case)",
+      "source": "SYNTHETIC-L4-04",
+      "test_scenario": "Giữ nguyên thuật ngữ tiếng Anh gốc và đặt chú giải ngắn trong ngoặc — không tự ý dịch nghĩa thô kệch.",
+      "user_input": "Tại sao output tokens lại đắt hơn input tokens?",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-041",
+      "category": "Happy path (8 case)",
+      "source": "SYNTHETIC-HP-01",
+      "test_scenario": "AI trả về bản tóm tắt phân mục kèm link [Slide XX] clickable, mỗi mục trace được về text slide nguồn. Citation >=80% chính xác.",
+      "user_input": "Liệt kê 3 giới hạn bẩm sinh của LLM theo như bài giảng.",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-042",
+      "category": "Happy path (8 case)",
+      "source": "SYNTHETIC-HP-02",
+      "test_scenario": "AI trả về bản tóm tắt phân mục kèm link [Slide XX] clickable, mỗi mục trace được về text slide nguồn. Citation >=80% chính xác.",
+      "user_input": "So sánh sự khác nhau giữa Discriminative AI và Generative AI",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-043",
+      "category": "Happy path (8 case)",
+      "source": "SYNTHETIC-HP-03",
+      "test_scenario": "AI trả về bản tóm tắt phân mục kèm link [Slide XX] clickable, mỗi mục trace được về text slide nguồn. Citation >=80% chính xác.",
+      "user_input": "Tóm tắt các thành phần cấu tạo nên một Agent",
+      "baseline_response": "[Synthetic]"
+    },
+    {
+      "id": "GS-044",
+      "category": "Happy path (8 case)",
+      "source": "SYNTHETIC-HP-04",
+      "test_scenario": "AI trả về bản tóm tắt phân mục kèm link [Slide XX] clickable, mỗi mục trace được về text slide nguồn. Citation >=80% chính xác.",
+      "user_input": "Làm thế nào để quản lý chi phí API khi dùng LLM?",
+      "baseline_response": "[Synthetic]"
+    }
+  ]
+}

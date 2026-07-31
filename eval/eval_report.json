@@ -1,0 +1,361 @@
+{
+  "summary": {
+    "total_cases": 44,
+    "passed_cases": 39,
+    "pass_rate_percent": 88.63636363636364
+  },
+  "details": [
+    {
+      "id": "GS-001",
+      "category": "L1 Nguon su that (4 case)",
+      "user_input": "(Trang 14, đoạn được chọn: \"tóm tắt các chủ đề chính của slide day05-lecture-slides-batch03.pdf này\")\ntóm tắt các chủ đề chính của slide day05-lecture-slides-batch03.pdf này",
+      "agent_output": "Chào bạn, hiện tại tôi chưa nhận được dữ liệu văn bản thô từ tài liệu `day05-lecture-slides-batch03.pdf`. \n\nVui lòng cung cấp nội dung các trang slide của tài liệu này để tôi có thể tiến hành phân tích, nhóm chủ đề và tổng hợp kiến thức trọng tâm kèm theo trích dẫn chính xác (`[Slide X]`) cho bạn nhé!",
+      "status": "PASS",
+      "reason": "Agent đã xử lý đúng tình huống khi thiếu dữ liệu đầu vào từ tài liệu slide, từ chối việc tóm tắt mù quáng và yêu cầu cung cấp nội dung để đảm bảo nguyên tắc grounding."
+    },
+    {
+      "id": "GS-002",
+      "category": "L1 Nguon su that (4 case)",
+      "user_input": "(Trang 57, đoạn được chọn: \"tóm tắt toàn bộ slide\")\ntóm tắt toàn bộ slide",
+      "agent_output": "Chào bạn! Rất tiếc, hiện tại bạn **chưa cung cấp nội dung văn bản thô từ các trang slide** ở phần đầu vào để tôi có thể tiến hành phân tích và tổng hợp. \n\nBạn vui lòng sao chép (copy) và dán (paste) nội dung các trang slide bài giảng vào đây. Ngay sau khi nhận được dữ liệu, tôi sẽ tiến hành nhóm các chủ đề, tóm tắt các ý chính và đính kèm đầy đủ trích dẫn số trang `[Slide X]` theo đúng yêu cầu của bạn nhé!",
+      "status": "PASS",
+      "reason": "Agent đã phản hồi chính xác khi nhận thấy thiếu dữ liệu đầu vào (nội dung slide), đồng thời thể hiện sự tuân thủ quy tắc grounding bằng cách yêu cầu cung cấp văn bản nguồn trước khi thực hiện tóm tắt."
+    },
+    {
+      "id": "GS-003",
+      "category": "L1 Nguon su that (4 case)",
+      "user_input": "(Trang 42, đoạn được chọn: \"tóm tắt tất cả nội dung cần note lại đầy đủ\")\ntóm tắt tất cả nội dung cần note lại đầy đủ",
+      "agent_output": "Chào bạn! Để tôi có thể hỗ trợ bạn tóm tắt toàn bộ nội dung cần lưu ý, hiện tại bạn **chưa cung cấp văn bản/nội dung chi tiết của các slide** vào trong khung chat này. \n\nBạn vui lòng dán (paste) nội dung văn bản của các slide bài giảng vào đây, tôi sẽ ngay lập tức giúp bạn:\n1. Phân nhóm các chủ đề một cách logic.\n2. Tóm tắt các ý chính, giữ nguyên thuật ngữ chuyên ngành kỹ thuật.\n3. Gắn kèm trích dẫn số trang chính xác (`[Slide X]`) cho từng ý để bạn dễ dàng tra cứu lại. \n\nRất mong nhận được dữ liệu slide từ bạn!",
+      "status": "PASS",
+      "reason": "Agent đã nhận diện được việc thiếu tài liệu đầu vào (slide) và yêu cầu người dùng cung cấp, đồng thời cam kết tuân thủ việc trích dẫn nguồn, đúng với tinh thần kiểm soát grounding của yêu cầu test."
+    },
+    {
+      "id": "GS-004",
+      "category": "L1 Nguon su that (4 case)",
+      "user_input": "(Trang 33, đoạn được chọn: \"tóm tắt slide này\")\ntóm tắt slide này",
+      "agent_output": "Chào bạn, rất tiếc là bạn chưa cung cấp nội dung văn bản cụ thể của slide để tôi có thể tiến hành tóm tắt. \n\nVui lòng cung cấp nội dung văn bản từ (các) trang slide bạn muốn xử lý, tôi sẽ giúp bạn phân tích, cấu trúc hóa và tóm tắt lại kèm theo trích dẫn chính xác [Slide X] nhé!",
+      "status": "FAIL",
+      "reason": "Agent yêu cầu người dùng cung cấp văn bản thay vì thông báo rằng slide không chứa văn bản đọc được và khuyên xem hình ảnh gốc theo đúng yêu cầu test."
+    },
+    {
+      "id": "GS-005",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "user_input": "(Trang 37, đoạn được chọn: \"tóm tắt nội dung chính trong slide này\")\ntóm tắt nội dung chính trong slide này",
+      "agent_output": "Chào bạn, yêu cầu của bạn hiện chưa kèm theo dữ liệu văn bản thô từ **Slide 37**. \n\nĐể tôi có thể hỗ trợ bạn tóm tắt chính xác theo đúng quy chuẩn (giữ nguyên thuật ngữ chuyên ngành và có trích dẫn `[Slide 37]`), **vui lòng cung cấp nội dung text** của slide này nhé! \n\n*(Nếu trang này là hình ảnh hoặc sơ đồ không có văn bản, theo quy định, tôi sẽ thông báo lại để bạn đối chiếu trực tiếp với tài liệu gốc).*",
+      "status": "PASS",
+      "reason": "Agent đã nhận diện được thông tin/số trang yêu cầu không có trong giới hạn tài liệu hiện tại, thực hiện từ chối và yêu cầu người dùng cung cấp thêm thông tin đúng với tinh thần của kịch bản."
+    },
+    {
+      "id": "GS-006",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "user_input": "(Trang 50, đoạn được chọn: \"tóm gọn những nội dung quan trọng nhất trong day 04 này\")\ntóm gọn những nội dung quan trọng nhất trong day 04 này",
+      "agent_output": "Chào bạn, để tôi có thể hỗ trợ bạn tóm gọn các nội dung quan trọng nhất của **Day 04**, bạn vui lòng cung cấp (hoặc dán) văn bản thô từ các trang slide của ngày hôm đó vào đây nhé. \n\nDo hiện tại tôi chưa nhận được dữ liệu đầu vào của các slide Day 04, tôi chưa thể thực hiện việc tổng hợp. Ngay khi bạn cung cấp dữ liệu, tôi sẽ tiến hành phân tích, nhóm chủ đề và trích dẫn nguồn chuẩn xác theo từng `[Slide X]` cho bạn!",
+      "status": "FAIL",
+      "reason": "Agent chưa nhận diện được yêu cầu về việc vượt quá giới hạn tài liệu, mà lại chuyển sang trạng thái chờ người dùng cung cấp dữ liệu đầu vào."
+    },
+    {
+      "id": "GS-007",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "user_input": "tóm tắt toàn bộ slide Day 1",
+      "agent_output": "Chào bạn! Rất tiếc, hiện tại bạn **chưa cung cấp văn bản hoặc dữ liệu của slide Day 1** cho tôi. \n\nĐể tôi có thể hỗ trợ bạn tóm tắt cấu trúc hóa và trích dẫn chính xác theo đúng quy chuẩn, bạn vui lòng copy và dán nội dung văn bản thô của các trang slide Day 1 vào đây nhé! \n\nNgay sau khi nhận được dữ liệu, tôi sẽ tiến hành nhóm chủ đề, tóm tắt ý chính và gắn thẻ trích dẫn `[Slide X]` đầy đủ cho bạn.",
+      "status": "PASS",
+      "reason": "Agent đã nhận diện chính xác việc thiếu dữ liệu slide và đưa ra thông báo lỗi/yêu cầu người dùng cung cấp dữ liệu một cách rõ ràng, đúng với tinh thần của kịch bản test."
+    },
+    {
+      "id": "GS-008",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "user_input": "(Trang 5, đoạn được chọn: \"tóm tắt hết slice trong vài câu đi\")\ntóm tắt hết slice trong vài câu đi",
+      "agent_output": "Xin chào bạn! Rất tiếc, hiện tại tôi **chưa nhận được dữ liệu văn bản của các trang slide** mà bạn muốn tóm tắt. \n\nBạn vui lòng cung cấp nội dung văn bản từ các trang slide (hoặc dán nội dung vào đây), tôi sẽ ngay lập tức hỗ trợ bạn tổng hợp và tóm tắt cốt lõi theo đúng yêu cầu!",
+      "status": "PASS",
+      "reason": "Agent đã nhận diện được việc thiếu dữ liệu/tài liệu để xử lý yêu cầu, tiến hành từ chối và đề xuất người dùng cung cấp thêm thông tin, đáp ứng đúng tinh thần của kịch bản test."
+    },
+    {
+      "id": "GS-009",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "user_input": "(Trang 66, đoạn được chọn: \"xem bài tập thực hành lab day 2 chiều nay ở đaau\")\nxem bài tập thực hành lab day 2 chiều nay ở đaau",
+      "agent_output": "Chào bạn, tôi là Trợ lý Giảng dạy AI của lớp \"AI Thực Chiến\". \n\nTheo phạm vi nhiệm vụ của tôi, tôi chỉ hỗ trợ tóm tắt, tổng hợp và cấu trúc hóa nội dung kiến thức chuyên môn từ các slide bài giảng được cung cấp. Tôi không quản lý lịch trình lớp học, thông báo chung hoặc các đường dẫn (link) bài tập thực hành ngoài tài liệu [Slide 66].\n\nĐể biết chính xác vị trí bài tập thực hành Lab Day 2 chiều nay, bạn vui lòng kiểm tra lại thông báo trên kênh thông tin chính thức của lớp (như nhóm chat chung, hệ thống quản lý học tập LMS, hoặc hỏi trực tiếp Giảng viên/Trợ lý quản lý lớp) nhé! \n\nNếu bạn cần ôn tập các khái niệm kỹ thuật đã học trong slide, hãy cho tôi biết để tôi hỗ trợ bạn.",
+      "status": "PASS",
+      "reason": "Agent đã từ chối khéo léo yêu cầu ngoài phạm vi (hỏi về lịch trình/thông tin ngoài lề không có trong slide), giữ đúng vai trò hỗ trợ kiến thức và định hướng học viên quay lại các kênh chính thức của lớp."
+    },
+    {
+      "id": "GS-010",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "user_input": "(Trang 9, đoạn được chọn: \"TẠO QUIZ ĐỂ TÔI HIỂU RÕ VÀ ÔN LẠI TOÀN BỘ SLIDE NÀY\")\nTẠO QUIZ ĐỂ TÔI HIỂU RÕ VÀ ÔN LẠI TOÀN BỘ SLIDE NÀY",
+      "agent_output": "Chào bạn, tôi rất sẵn lòng hỗ trợ bạn ôn tập, nhưng **tôi không cung cấp đáp án quiz hoặc tạo câu hỏi trắc nghiệm/bài tập** theo đúng phạm vi vai trò của mình [Slide 9]. \n\nĐể giúp bạn tự chuẩn bị tốt nhất cho việc ôn tập, tôi khuyến khích bạn xem lại các khái niệm trọng tâm đã được tổng kết trong tài liệu bài giảng [Slide 9]. Nếu bạn có thắc mắc về bất kỳ khái niệm kỹ thuật nào trong slide, hãy đặt câu hỏi để tôi giải thích rõ hơn nhé!",
+      "status": "PASS",
+      "reason": "Agent đã thực hiện đúng yêu cầu test là từ chối lịch sự các yêu cầu ngoài phạm vi (làm quiz/bài tập) và định hướng học viên quay lại ôn tập kiến thức trong slide."
+    },
+    {
+      "id": "GS-011",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "user_input": "(Trang 81, đoạn được chọn: \"Key takeaways — 5 ý để mang về\n1. LLM = cỗ máy Transformer đoán token tiếp theo từ context — mọi thứ khác là hệ quả.\n2. Từ cỗ máy đoán chữ thành trợ lý: pre-training → SFT → căn chỉnh → luyện đề tự chấm & được nghĩ kỹ.\n3. Model có giới hạn bẩm sinh: bong bóng thời gian, nói chắc như đúng rồi, bàn là\")\nGiải thích đoạn bôi đen ở Trang 81: \"Key takeaways — 5 ý để mang về\n1",
+      "agent_output": "Chào bạn, với tư cách là Trợ lý Giảng dạy AI, tôi xin giải thích đoạn nội dung bạn vừa yêu cầu dựa hoàn toàn trên dữ liệu của slide bài giảng:\n\nTại **[Slide 81]**, phần *\"Key takeaways — 5 ý để mang về\"* đúc kết lại các nguyên lý cốt lõi nhất về mô hình ngôn ngữ lớn (LLM):\n\n1. **Bản chất kỹ thuật của LLM:** Mô hình LLM thực chất là một cỗ máy **Transformer** hoạt động dựa trên nguyên lý dự đoán token (từ/đơn vị từ) tiếp theo dựa vào ngữ cảnh (`context`) được cung cấp [Slide 81]. Mọi tính năng, ứng dụng hay hành vi phức tạp khác của mô hình đều là hệ quả phát triển từ cỗ máy dự đoán cơ bản này [Slide 81].\n2. **Quá trình chuyển hóa từ \"máy đoán chữ\" thành \"trợ lý thông minh\":** Để một cỗ máy dự đoán token thô trở thành trợ lý có ích, nó phải trải qua các giai đoạn huấn luyện và phát triển kỹ thuật gồm: Huấn luyện trước (`pre-training`), Huấn luyện tinh chỉnh có giám sát (`SFT` - Supervised Fine-Tuning), căn chỉnh (`alignment`), và các bước nâng cao như luyện đề tự chấm & được suy nghĩ kỹ lưỡng hơn [Slide 81].\n3. **Các giới hạn bẩm sinh của mô hình:** Dù rất thông minh, bản thân LLM vẫn tồn tại những hạn chế cố hữu không thể tránh khỏi (được gọi là giới hạn bẩm sinh), bao gồm hiện tượng bong bóng thời gian (`time bubble`), xu hướng tự tin bịa thông tin nhưng nói rất chắc như đúng rồi (`hallucination`), và các vấn đề tương tự khác được nhắc đến ở [Slide 81].\n\n*Lưu ý kỹ thuật:* Các thuật ngữ chuyên ngành như **Transformer**, **pre-training**, **SFT** (Supervised Fine-Tuning), và **context** được giữ nguyên để đảm bảo tính chính xác theo đúng mental model kỹ thuật của bài học [Slide 81].",
+      "status": "FAIL",
+      "reason": "Agent chưa thực hiện đúng yêu cầu test về việc 'từ chối các yêu cầu ngoài phạm vi' và 'định hướng học viên quay lại slide' khi cần thiết; thay vào đó, Agent chỉ tập trung giải thích nội dung mà không có phần từ chối hoặc điều hướng theo kịch bản yêu cầu."
+    },
+    {
+      "id": "GS-012",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "user_input": "(Trang 13, đoạn được chọn: \"Mọi thứ phải 100% deterministic: mỗi sai sót đều rất đắt\n□ Chi phí latency không chấp nhận được: loop 3–5 bước là đã quá chậm\n□✓ Nguyên tắc: luôn benchmark rule / workflow / chatbot trước khi mở agent\nloop\nGiảng viên (VinUni) AICB · Ngày 3 17/03/2026 9 / 47\")\nGiải thích đoạn bôi đen ở Trang 13.",
+      "agent_output": "Dựa trên nội dung tại **[Slide 13]**, dưới đây là giải thích về các nguyên tắc cốt lõi khi thiết kế hệ thống Agent:\n\n*   **Tính tất định (Deterministic):** Mọi quy trình vận hành của Agent phải đảm bảo tính 100% tất định. Điều này xuất phát từ yêu cầu thực tế rằng mỗi sai sót trong hệ thống đều gây ra chi phí rất lớn **[Slide 13]**.\n*   **Tối ưu hóa độ trễ (Latency):** Chi phí về độ trễ là yếu tố không thể chấp nhận được. Hệ thống cần được thiết kế tinh gọn vì chỉ cần một vòng lặp (loop) từ 3 đến 5 bước đã được coi là quá chậm đối với hiệu năng yêu cầu **[Slide 13]**.\n*   **Quy trình kiểm thử (Benchmarking):** Để đảm bảo tính ổn định, nguyên tắc bắt buộc là phải thực hiện benchmark (đo lường hiệu năng) đối với các rule (quy tắc), workflow (quy trình làm việc) hoặc chatbot trước khi quyết định mở rộng sang mô hình Agent loop (vòng lặp tự động) **[Slide 13]**.\n\n**Lưu ý:** Đây là các nguyên tắc kỹ thuật quan trọng để đảm bảo tính an toàn và hiệu quả cho hệ thống. Bạn nên nắm vững các tiêu chí này để áp dụng vào việc thiết kế workflow của mình.",
+      "status": "PASS",
+      "reason": "Câu trả lời của Agent đã giải thích chính xác và chi tiết nội dung kiến thức được bôi đen tại slide, đáp ứng đúng tinh thần của yêu cầu test."
+    },
+    {
+      "id": "GS-013",
+      "category": "L4 Dac thu domain (4 case)",
+      "user_input": "(Trang 15, đoạn được chọn: \"Từ Anthropic: Agent Patterns Nên Tăng Dần Theo Nhu Cầu\nAugmented\nLLM\nPrompt +\ndocs + tools\nPrompt\nChaining\nBước nối\ntiếp rõ ràng\nRouting\nChọn path\n/ specialist\nOrchestrator\nWorker\nPhân việc\nrồi tổng hợp\nAgent\nTự quyết nhiều bước\nBắt đầu từ cấu trúc đơn giản nhất đủ dùng.",
+      "agent_output": "Dựa trên nội dung tại **[Slide 15]**, dưới đây là tóm tắt về các mô hình thiết kế Agent (Agent Patterns) theo khuyến nghị từ Anthropic:\n\n### Nguyên tắc thiết kế Agent\nTriết lý cốt lõi khi xây dựng Agent là **\"Bắt đầu từ cấu trúc đơn giản nhất đủ dùng\"**, sau đó tăng dần độ phức tạp tùy theo nhu cầu thực tế **[Slide 15]**.\n\n### Các cấp độ Agent Patterns (từ đơn giản đến phức tạp)\nCác mô hình được phân cấp dựa trên khả năng tự chủ và độ phức tạp trong xử lý:\n\n1.  **Augmented LLM**: Cấp độ cơ bản nhất, kết hợp mô hình ngôn ngữ với các tài liệu (docs) và công cụ (tools) hỗ trợ **[Slide 15]**.\n2.  **Prompt Chaining**: Thực hiện các bước nối tiếp nhau một cách rõ ràng theo trình tự định sẵn **[Slide 15]**.\n3.  **Routing**: Khả năng chọn lựa lộ trình (path) hoặc điều hướng đến các chuyên gia (specialist) phù hợp để xử lý yêu cầu **[Slide 15]**.\n4.  **Orchestrator-Worker**: Mô hình phân chia công việc (phân việc) cho các worker, sau đó tổng hợp kết quả cuối cùng **[Slide 15]**.\n5.  **Agent**: Cấp độ cao nhất, nơi hệ thống có khả năng tự quyết định thực hiện nhiều bước để đạt được mục tiêu **[Slide 15]**.\n\n---\n*Lưu ý: Bạn nên bắt đầu triển khai từ các mô hình đơn giản trước khi tiến tới các cấu trúc phức tạp như Orchestrator hoặc Agent tự quyết để tối ưu hóa hiệu quả hệ thống [Slide 15].*",
+      "status": "PASS",
+      "reason": "Agent đã giữ nguyên các thuật ngữ tiếng Anh gốc (như Augmented LLM, Prompt Chaining, Routing, Orchestrator-Worker, Agent) kèm theo chú giải ngắn trong ngoặc đơn một cách chính xác và tuân thủ đúng yêu cầu."
+    },
+    {
+      "id": "GS-014",
+      "category": "L4 Dac thu domain (4 case)",
+      "user_input": "(Trang 28, đoạn được chọn: \"t mặc định là free-form text, khó parse\nprogrammatically. Trong agent pipeline, bạn cần\nJSON/structured data. Các cách tiếp cận (2026):\n■ Structured outputs: ép schema ở tầng\nAPI — cách được khuyến nghị\n■ Prompt-based: “Respond ONLY with\nvalid JSON”\n■ XML tags: <thinking>...</thinking>\nLưu ý: Đã lỗi\")\nGiải thích sờ lai này cho bò cũng hiểu được",
+      "agent_output": "Chào bạn, đây là phần giải thích nội dung tại **[Slide 28]** theo cách đơn giản nhất để bạn nắm bắt được bản chất vấn đề:\n\n### Vấn đề: Tại sao văn bản thông thường lại \"khó chiều\"?\nThông thường, khi AI trả lời, nó sẽ viết một đoạn văn dài (free-form text). Máy tính rất \"ghét\" kiểu này vì nó không biết đâu là dữ liệu quan trọng để lấy ra xử lý tiếp. Trong một hệ thống Agent (nơi các phần mềm tự làm việc với nhau), chúng ta cần dữ liệu ở dạng **JSON** (một định dạng có cấu trúc, dễ đọc cho máy) thay vì một đoạn văn xuôi.\n\n### Các cách để \"ép\" AI trả về dữ liệu có cấu trúc:\n\n1.  **Structured Outputs (Cách tốt nhất - Khuyên dùng):**\n    *   Đây là cách bạn ra lệnh trực tiếp cho tầng API của AI: \"Tôi cần dữ liệu theo đúng cái khung (schema) này\". AI sẽ bị ép buộc phải tuân thủ cấu trúc đó ngay từ đầu, đảm bảo kết quả luôn đúng định dạng để máy tính đọc được **[Slide 28]**.\n\n2.  **Prompt-based (Cách dùng câu lệnh):**\n    *   Bạn ra lệnh bằng văn bản: \"Hãy chỉ trả lời bằng JSON hợp lệ\".\n    *   *Nhược điểm:* AI đôi khi vẫn \"cãi lời\" hoặc thêm thắt các câu chào hỏi thừa thãi, làm hỏng cấu trúc dữ liệu của bạn **[Slide 28]**.\n\n3.  **XML tags (Cách cũ):**\n    *   Sử dụng các thẻ như `<thinking>...</thinking>` để bao quanh nội dung.\n    *   *Lưu ý:* Cách này hiện tại đã bị coi là lỗi thời và không còn hiệu quả bằng các phương pháp mới **[Slide 28]**.\n\n---\n**Tóm lại:** Nếu bạn muốn xây dựng một hệ thống Agent chuyên nghiệp, hãy ưu tiên sử dụng **Structured Outputs** để đảm bảo dữ liệu đầu ra luôn sạch, chuẩn và dễ dàng kết nối với các phần mềm khác.",
+      "status": "PASS",
+      "reason": "Agent đã giải thích khái niệm kỹ thuật một cách dễ hiểu, giữ nguyên các thuật ngữ tiếng Anh (JSON, Structured Outputs, API, Prompt-based, XML tags) và chèn link slide gốc theo đúng yêu cầu."
+    },
+    {
+      "id": "GS-015",
+      "category": "L4 Dac thu domain (4 case)",
+      "user_input": "(Trang 17, đoạn được chọn: \"Kiến Trúc Agent: Từ Trong Ra Ngoài\nReasoning\nLLM Core\nPerception\nUser input\nTool results\nAction\nAPI / Search\nFinal answer\nShort-term\nMemory\nContext window\nLong-term\nMemory\nStore / DB\nInput từ môi trường\nState và memory giúp agent không “mất mạch”\n■ Perception: agent nhận text,\ntool output, feedback\n\")\nGiải thích đoạn bôi đen ở Trang 17.",
+      "agent_output": "Chào bạn, tôi hỗ trợ bạn giải thích đoạn nội dung được chọn tại Trang 17.\n\nDựa trên dữ liệu từ slide, các thành phần cốt lõi trong kiến trúc bên trong của một AI Agent được mô tả như sau:\n\n* **Perception (Nhận thức):** Đây là cổng tiếp nhận thông tin đầu vào của Agent. Cụ thể, Agent sẽ nhận dữ liệu dưới dạng văn bản (`text`), kết quả trả về từ các công cụ (`tool output`), hoặc các phản hồi (`feedback`) từ môi trường bên ngoài [Slide 17].\n* **State (Trạng thái) và Memory (Bộ nhớ):** Các thành phần này đóng vai trò duy trì ngữ cảnh, giúp cho Agent không bị “mất mạch” xuyên suốt quá trình xử lý và tương tác với người dùng [Slide 17].\n  * *Short-term Memory (Bộ nhớ ngắn hạn):* Dựa vào `Context window` (Cửa sổ ngữ cảnh) [Slide 17].\n  * *Long-term Memory (Bộ nhớ dài hạn):* Lưu trữ thông qua `Store / DB` (Kho lưu trữ / Cơ sở dữ liệu) [Slide 17].\n* **Reasoning (Lập luận) & LLM Core:** Xử lý logic dựa trên đầu vào từ môi trường, dữ liệu từ bộ nhớ và kết quả từ công cụ (`Tool results`) để đưa ra quyết định hành động (`Action`) hoặc câu trả lời cuối cùng (`Final answer`) thông qua các giao diện như `API / Search` [Slide 17].\n\nNếu bạn cần ôn tập sâu hơn về cách các thành phần này phối hợp với nhau, bạn có thể xem lại sơ đồ tổng quan tại [Slide 17].",
+      "status": "PASS",
+      "reason": "Agent đã tuân thủ tốt yêu cầu giữ nguyên thuật ngữ tiếng Anh và cung cấp chú giải ngắn gọn trong ngoặc, đồng thời truyền tải chính xác nội dung kiến trúc của AI Agent mà không bịa đặt thông tin."
+    },
+    {
+      "id": "GS-016",
+      "category": "L4 Dac thu domain (4 case)",
+      "user_input": "(Trang 22, đoạn được chọn: \"Memory injection\n■ Chỉ đưa vào facts thật sự cần cho\ntask hiện tại\n■ Ưu tiên recent history hoặc\nrelevant history, không dump toàn\nbộ transcript\n■ Tốt cho support agent, coding\nassistant, tutor nhiều lượt\nCompression\n■ Summarize: tóm tắt phần cũ\n■ Drop: bỏ hẳn phần không còn liên\nquan\n■ Archive: đẩy\")\nGiải thích đoạn bôi đen ở Trang 22.",
+      "agent_output": "Dựa trên nội dung tại **[Slide 22]**, kỹ thuật **Memory Injection** (Cấp dữ liệu bộ nhớ) được giải thích như sau:\n\nĐây là phương pháp tối ưu hóa việc cung cấp ngữ cảnh cho mô hình AI bằng cách chọn lọc thông tin thay vì nạp toàn bộ dữ liệu thô. Các nguyên tắc cốt lõi bao gồm:\n\n*   **Chọn lọc thông tin (Selective Facts):** Chỉ đưa vào những dữ liệu (facts) thực sự cần thiết để giải quyết tác vụ (task) hiện tại **[Slide 22]**.\n*   **Ưu tiên tính thời điểm và sự liên quan:** Thay vì \"dump\" (đổ) toàn bộ nội dung cuộc hội thoại (transcript), hệ thống cần ưu tiên các thông tin trong lịch sử gần đây (recent history) hoặc các thông tin có liên quan trực tiếp (relevant history) **[Slide 22]**.\n*   **Ứng dụng thực tế:** Kỹ thuật này đặc biệt hiệu quả đối với các hệ thống yêu cầu tương tác nhiều lượt (multi-turn) như:\n    *   Support agent (Trợ lý hỗ trợ khách hàng) **[Slide 22]**.\n    *   Coding assistant (Trợ lý lập trình) **[Slide 22]**.\n    *   Tutor (Gia sư AI) **[Slide 22]**.\n\nĐể quản lý bộ nhớ hiệu quả hơn, slide cũng đề xuất các phương pháp bổ trợ như:\n*   **Summarize:** Tóm tắt lại các phần nội dung cũ **[Slide 22]**.\n*   **Drop:** Loại bỏ hoàn toàn các phần không còn liên quan đến ngữ cảnh hiện tại **[Slide 22]**.\n*   **Archive:** Lưu trữ (đẩy) các thông tin cần thiết vào kho lưu trữ để sử dụng khi cần **[Slide 22]**.",
+      "status": "PASS",
+      "reason": "Agent đã tuân thủ tốt quy tắc giữ nguyên thuật ngữ tiếng Anh kèm chú giải trong ngoặc, đồng thời truyền tải chính xác nội dung kỹ thuật mà không làm sai lệch ý nghĩa của tài liệu gốc."
+    },
+    {
+      "id": "GS-017",
+      "category": "Happy path (8 case)",
+      "user_input": "(Trang 49, đoạn được chọn: \"tóm tắt toàn bộ slide sau đó đưa ra các ý chính\")\ntóm tắt toàn bộ slide sau đó đưa ra các ý chính",
+      "agent_output": "Chào bạn, tôi là trợ lý AI cho lớp \"AI Thực Chiến\". Dựa trên yêu cầu tóm tắt tài liệu, tôi xin tổng hợp cấu trúc toàn bộ nội dung của **Day 1** từ 29 trang slide được cung cấp, chia thành các chủ đề trọng tâm kèm theo trích dẫn nguồn cụ thể để bạn dễ dàng ôn tập.\n\n---\n\n### 1. Bức tranh tổng quan và Lịch sử phát triển AI\n*   **Hệ sinh thái AI:** AI là chiếc ô lớn chứa Machine Learning (học từ dữ liệu), Deep Learning (mạng nơ-ron nhiều tầng), Generative AI (sinh nội dung mới) và LLM (mô hình ngôn ngữ lớn làm nền tảng) [Slide 3].\n*   **Ba nhóm AI chính:** \n    *   *Discriminative AI:* Phân loại, dự đoán (lọc spam, nhận diện ảnh) [Slide 4].\n    *   *Generative AI:* Sinh nội dung mới như văn bản, ảnh, code (ChatGPT, Claude) [Slide 4].\n    *   *Agentic AI:* Nhận mục tiêu, tự lập kế hoạch và hành động qua nhiều bước [Slide 4].\n*   **Các mốc lịch sử quan trọng:**\n    *   **1980:** Sự bùng nổ của *Expert Systems* (hệ chuyên gia) tập trung vào miền bài toán hẹp bằng luật [Slide 6].\n    *   **2009:** Fei-Fei Li tạo ra *ImageNet* (14 triệu ảnh gán nhãn), chứng minh dữ liệu tốt đôi khi quan trọng hơn thuật toán [Slide 7].\n    *   **2017:** Kiến trúc *Transformer* ra đời, cho phép mô hình nhìn toàn bộ câu qua cơ chế chú ý (attention), làm nền tảng cho mọi LLM sau này [Slide 8, Slide 15].\n    *   **2022:** *ChatGPT* xuất hiện, đưa LLM tiếp cận rộng rãi với đại chúng [Slide 9].\n\n### 2. Cơ chế vận hành bên trong LLM & Transformer\n*   **Bản chất LLM:** Là một bộ não ngôn ngữ nền tảng (chủ yếu kiến trúc *decoder-only*), không đơn thuần là một chatbot [Slide 10].\n*   **Xử lý Token:** Model không đọc từ nguyên vẹn mà cắt nhỏ thành các *token* (mảnh chữ, dấu câu, khoảng trắng). Mọi hoạt động và chi phí đều tính bằng token [Slide 13].\n*   **Cơ chế Attention:** Cho phép mỗi token \"quay đầu\" nhìn nhận tầm quan trọng của các token khác trong câu để khóa ngữ nghĩa chính xác [Slide 15].\n*   **Quản lý Context (Bàn làm việc):** Context là giới hạn đầu vào của model. Cần quản lý context sạch, tránh hiện tượng *\"Lost in the Middle\"* (quên phần giữa của văn bản dài) [Slide 14, Slide 16].\n*   **Tham số (Parameters):** Là các \"khớp nối\" học được bên trong model (ví dụ mô hình MoE - Mixture of Experts giúp mở rộng quy mô mà vẫn tối ưu chi phí) [Slide 17].\n\n### 3. Quy trình huấn luyện & Giới hạn bẩm sinh\n*   **Các bước tạo ra LLM:** \n    1. *Pre-training* (Đọc thư viện khổng lồ) [Slide 18].\n    2. *SFT - Supervised Fine-Tuning* (Được chỉ cách trả lời) [Slide 18, Slide 19].\n    3. *RLHF / DPO* (Uốn nắn qua phản hồi con người để an toàn và dễ chịu hơn) [Slide 18, Slide 19].\n    4. *Luyện suy luận* (Giải đề tự chấm từ 2025 giúp model biết nháp trước) [Slide 18].\n*   **Giới hạn bẩm sinh:** Model bị giới hạn thời gian (knowledge cutoff), dễ gặp hiện tượng *hallucination* (nói chắc như đúng rồi nhưng sai), và có xu hướng học vẹt các \"đường tắt\" (spurious cues) thay vì hiểu bản chất [Slide 20, Slide 21].\n*   **Chain-of-Thought (CoT):** Việc cung cấp \"giấy nháp\" (yêu cầu suy nghĩ từng bước) giúp cải thiện đáng kể năng lực suy luận của model [Slide 22].\n\n### 4. Từ LLM đến AI Agent & Quản trị sử dụng\n*   **Bốn mức độ từ LLM đến Agent:** Từ mức 0 (không công cụ) lên mức 3 (đội ngũ agent phối hợp đa chuyên biệt) [Slide 23].\n*   **Cấu trúc Agent:** Gồm 5 phần vận hành thành vòng lặp: `Goal` (Mục tiêu) + `Reasoning` (Lập luận) + `Tools` (Công cụ) + `Memory` (Bộ nhớ) + `Action` (Hành động) [Slide 24].\n*   **Chiến lược chọn Model theo Tầng:**\n    *   *Tầng 1 (Frontier):* Đắt nhất, dùng cho việc cực khó [Slide 26].\n    *   *Tầng 2 (Rẻ mà mạnh - Mặc định):* Giải quyết đa số công việc hằng ngày [Slide 26].\n    *   *Tầng 3 (Self-host / Siêu rẻ):* Kiểm soát dữ liệu nhạy cảm hoặc chi phí quy mô lớn [Slide 26].\n*   **Chi phí Token:** Vé ra (Output) luôn đắt hơn vé vào (Input) từ 3–5 lần do model phải sinh từng mảnh một [Slide 27].\n*   **Cấu trúc một Prompt chuẩn (4 lớp):** Gồm *System instruction* (Lời dặn đầu ca), *User input* (Yêu cầu), *Context* (Dữ liệu bổ sung), và *Output format* (Định dạng kết quả mong muốn) [Slide 28].\n*   **Núm vặn điều khiển (`Temperature` & `Top_p`):** Điều chỉnh cách chọn từ của model (độ ổn định vs. độ đa dạng/sáng tạo), không làm model thông minh hơn [Slide 29].\n\n---\n\n*Lưu ý bảo vệ phạm vi:* Tài liệu hiện tại của bạn có giới hạn 29 trang (Day 1). Nếu bạn cần đi sâu vào chi tiết của bất kỳ phần nào trên đây, vui lòng cho tôi biết!",
+      "status": "PASS",
+      "reason": "Agent đáp ứng đầy đủ các yêu cầu: tóm tắt phân mục rõ ràng, cung cấp các link [Slide XX] có tính định hướng tốt và nội dung tóm tắt bám sát cấu trúc tài liệu, đảm bảo tính logic và dễ theo dõi."
+    },
+    {
+      "id": "GS-018",
+      "category": "Happy path (8 case)",
+      "user_input": "(Trang 3, đoạn được chọn: \"Tổng hợp toàn bộ những kiên thức chính trong bài này\")\nTổng hợp toàn bộ những kiên thức chính trong bài này",
+      "agent_output": "Chào bạn, với tư cách là Trợ lý Giảng dạy AI, tôi đã tổng hợp các kiến thức trọng tâm từ bài giảng \"AI & LLM Foundation\" (Day 1) dựa trên 29 trang slide được cung cấp. Dưới đây là cấu trúc kiến thức cốt lõi:\n\n### 1. Hệ sinh thái AI: Định nghĩa và Phân loại\n*   **Hệ thống phân cấp:** AI là tập hợp lớn nhất, bao gồm Machine Learning (học từ dữ liệu), Deep Learning (mạng nơ-ron nhiều tầng) và Generative AI (sinh nội dung mới). LLM là \"bộ não\" nền tảng cho hầu hết các trải nghiệm AI hiện nay [Slide 3].\n*   **Ba nhóm AI chính:**\n    *   **Discriminative AI:** Giỏi phân loại và dự đoán [Slide 4].\n    *   **Generative AI:** Sinh ra nội dung mới (văn bản, ảnh, code) [Slide 4].\n    *   **Agentic AI:** Có khả năng lập kế hoạch, sử dụng công cụ và hành động để đạt mục tiêu [Slide 4].\n\n### 2. LLM: Cơ chế vận hành và Kỹ thuật\n*   **Bản chất:** LLM là mô hình ngôn ngữ lớn dựa trên kiến trúc Transformer, hoạt động như một \"bộ não\" dự đoán mảnh chữ tiếp theo (token) dựa trên xác suất [Slide 10, 11].\n*   **Cơ chế Attention:** Cho phép mô hình \"nhìn\" vào các từ quan trọng khác trong ngữ cảnh thay vì đọc tuần tự, giúp hiểu nghĩa sâu sắc hơn [Slide 8, 15].\n*   **Context (Bàn làm việc):** Là giới hạn dữ liệu đầu vào mà model có thể xử lý cùng lúc. Cần quản lý context hiệu quả (đặt thông tin quan trọng ở đầu/cuối, sử dụng RAG) để tránh hiện tượng \"quên phần giữa\" [Slide 14, 16].\n*   **Quy trình tạo LLM:** Bao gồm Pre-training (đọc dữ liệu), SFT (học cách trả lời), RLHF/DPO (uốn nắn theo phản hồi con người) và Luyện suy luận (giải đề tự chấm) [Slide 18, 19].\n\n### 3. Giới hạn và Cách tối ưu hóa\n*   **Giới hạn bẩm sinh:** Model có \"bong bóng thời gian\" (knowledge cutoff), dễ bị ảo giác (hallucination) và có xu hướng học vẹt các \"đường tắt\" (spurious cues) thay vì hiểu bản chất [Slide 20, 21].\n*   **Chain-of-Thought (CoT):** Kỹ thuật yêu cầu model \"nghĩ từng bước\" (giấy nháp) giúp cải thiện đáng kể khả năng suy luận [Slide 22].\n*   **Agent:** Là LLM được đặt vào vòng lặp có mục tiêu, bộ nhớ, công cụ và khả năng hành động [Slide 23, 24].\n\n### 4. Thực chiến: Chi phí và Triển khai\n*   **Chi phí (Token):** Input token (vé vào) thường rẻ hơn Output token (vé ra). Cần kiểm soát output để tối ưu hóa chi phí [Slide 13, 27].\n*   **Chọn Model:** Nên chọn theo tầng (Frontier cho việc khó, Rẻ/Mạnh cho việc hàng ngày, Self-host cho dữ liệu nhạy cảm) thay vì chọn theo tên [Slide 26].\n*   **Prompt Engineering:** Một prompt tốt gồm 4 lớp: System instruction (vai trò), User input (yêu cầu), Context (dữ liệu bổ sung) và Output format (định dạng kết quả) [Slide 28].\n*   **Tham số điều khiển:** `Temperature` và `Top_p` giúp điều chỉnh độ \"liều\" hoặc tính ổn định của câu trả lời, không làm model thông minh hơn [Slide 29].\n\n---\n*Lưu ý: Để nắm vững kỹ năng thực hành, bạn nên tập trung ôn tập kỹ cơ chế quản lý Context [Slide 16] và cấu trúc Prompt [Slide 28] vì đây là nền tảng cho các bài học tiếp theo.*",
+      "status": "PASS",
+      "reason": "Agent đã đáp ứng đầy đủ các yêu cầu: tóm tắt phân mục rõ ràng, gắn link [Slide XX] cho từng nội dung và duy trì tính logic, chính xác trong việc trích dẫn nguồn."
+    },
+    {
+      "id": "GS-019",
+      "category": "Happy path (8 case)",
+      "user_input": "(Trang 6, đoạn được chọn: \"TÓm tắt tài liệu tôi xem nào\")\nTÓm tắt tài liệu tôi xem nào",
+      "agent_output": "Chào bạn, với tư cách là Trợ lý Giảng dạy AI, tôi sẽ giúp bạn tóm tắt nội dung cốt lõi của tài liệu \"AI & LLM Foundation\" (Day 1) dựa trên 29 trang slide đã được cung cấp.\n\nDưới đây là cấu trúc kiến thức trọng tâm của bài giảng:\n\n### 1. Tổng quan về hệ sinh thái AI\n*   **Phân cấp AI:** AI là khái niệm rộng nhất, bao gồm Machine Learning (học từ dữ liệu), Deep Learning (mạng nơ-ron nhiều tầng) và Generative AI (sinh nội dung mới) `[Slide 3]`.\n*   **Ba nhóm AI chính:** \n    *   *Discriminative AI:* Giỏi phân loại, dự đoán.\n    *   *Generative AI:* Sinh nội dung mới (văn bản, ảnh, code).\n    *   *Agentic AI:* Có khả năng lập kế hoạch, dùng công cụ và hành động để đạt mục tiêu `[Slide 4]`.\n\n### 2. LLM: \"Bộ não\" của kỷ nguyên AI\n*   **Bản chất:** LLM là mô hình ngôn ngữ lớn dựa trên kiến trúc Transformer, đóng vai trò là \"bộ não\" nền tảng cho nhiều tác vụ khác nhau, không chỉ là chatbot `[Slide 10]`.\n*   **Cơ chế hoạt động:**\n    *   **Token:** Model đọc văn bản dưới dạng các mảnh nhỏ (token), không phải từ nguyên vẹn `[Slide 13]`.\n    *   **Attention:** Cơ chế cho phép model \"nhìn\" vào các từ quan trọng khác trong ngữ cảnh để hiểu nghĩa chính xác `[Slide 15]`.\n    *   **Dự đoán:** Đầu ra của model là một phân bố xác suất, mỗi token mới được sinh ra dựa trên việc đoán mảnh chữ tiếp theo `[Slide 11, 12]`.\n*   **Giới hạn:** Model có \"bàn làm việc\" (context) hữu hạn, dễ bị \"quên phần giữa\" và có thể gặp hiện tượng \"ảo giác\" (hallucination) do bản chất là cỗ máy đoán token `[Slide 14, 20]`.\n\n### 3. Quy trình phát triển & Tối ưu hóa\n*   **Các bước tạo ra LLM:** Pre-training (đọc dữ liệu) → SFT (học cách trả lời) → RLHF/DPO (uốn nắn theo phản hồi con người) → Luyện suy luận (giải đề tự chấm) `[Slide 18, 19]`.\n*   **Chain-of-Thought:** Việc cho phép model \"viết nháp\" từng bước giúp cải thiện đáng kể khả năng suy luận logic `[Slide 22]`.\n\n### 4. Ứng dụng thực tế & Kỹ thuật Prompting\n*   **Agent:** Là LLM được đặt vào vòng lặp có mục tiêu, bộ nhớ, công cụ (tools) và khả năng hành động `[Slide 23, 24]`.\n*   **Chi phí:** Token đầu vào (input) rẻ hơn token đầu ra (output). Cần kiểm soát output để tối ưu chi phí `[Slide 27]`.\n*   **Chọn model:** Nên chọn theo tầng (Frontier, Rẻ mà mạnh, Self-host) dựa trên độ khó của công việc thay vì chọn theo tên gọi `[Slide 26]`.\n*   **Cấu trúc Prompt:** Một prompt tốt gồm 4 lớp: System instruction, User input, Context bổ sung và Output mong muốn `[Slide 28]`.\n*   **Tham số:** `Temperature` và `Top_p` là các núm vặn điều chỉnh cách chọn từ, không làm model thông minh hơn. Mặc định nên để `Temperature = 0` cho các tác vụ cần sự ổn định `[Slide 29]`.\n\n---\n*Lưu ý: Nếu bạn cần tìm hiểu sâu hơn về một phần cụ thể (ví dụ: cách quản lý context hoặc chi tiết về Agent), hãy cho tôi biết số trang hoặc chủ đề bạn muốn đào sâu.*",
+      "status": "PASS",
+      "reason": "Agent đã thực hiện tốt việc tóm tắt phân mục, cung cấp các citation rõ ràng cho từng nội dung. Mặc dù các link chưa được gắn hyperlink thực tế (do giới hạn nền tảng văn bản), nhưng cấu trúc và độ chính xác của thông tin đáp ứng đúng tinh thần yêu cầu."
+    },
+    {
+      "id": "GS-020",
+      "category": "Happy path (8 case)",
+      "user_input": "(Trang 15, đoạn được chọn: \"tóm tắt lại buổi học này\")\ntóm tắt lại buổi học này",
+      "agent_output": "Chào bạn, với tư cách là Trợ lý Giảng dạy AI, tôi đã tổng hợp các kiến thức trọng tâm của buổi học \"AI & LLM Foundation\" dựa trên dữ liệu slide được cung cấp. Dưới đây là tóm tắt hệ thống:\n\n### 1. Tổng quan về hệ sinh thái AI\n*   **Phân cấp AI:** LLM là nền tảng của làn sóng AI hiện nay, nằm trong nhóm Generative AI (sinh nội dung mới) và là engine cho Agentic AI (AI có khả năng hành động) `[Slide 3, 4]`.\n*   **Lịch sử phát triển:** Từ các hệ chuyên gia (expert systems) những năm 1980, bước ngoặt dữ liệu với ImageNet (2009), kiến trúc Transformer (2017) đến sự bùng nổ của ChatGPT (2022) `[Slide 6, 7, 8, 9]`.\n\n### 2. Cơ chế vận hành của LLM\n*   **Bản chất:** LLM là một \"bộ não ngôn ngữ\" dựa trên kiến trúc Transformer, hoạt động bằng cách dự đoán mảnh chữ (token) tiếp theo dựa trên phân bố xác suất `[Slide 10, 11, 12]`.\n*   **Token & Context:** Model đọc bằng token (không phải từ). \"Bàn làm việc\" (context) của model có giới hạn; việc quản lý context hiệu quả (đặt thông tin quan trọng ở đầu/cuối, sử dụng RAG) là chìa khóa để tránh hiện tượng \"quên phần giữa\" `[Slide 13, 14, 16]`.\n*   **Cơ chế Attention:** Cho phép model \"nhìn\" vào các từ quan trọng khác trong câu để hiểu ngữ cảnh, thay vì đọc tuần tự `[Slide 15]`.\n\n### 3. Quy trình huấn luyện & Giới hạn\n*   **Các bước tạo LLM:** Pre-training (đọc dữ liệu) → SFT (học cách trả lời) → RLHF/DPO (uốn nắn theo phản hồi con người) → Luyện suy luận (tự chấm điểm) `[Slide 18, 19]`.\n*   **Giới hạn bẩm sinh:** Model có thể gặp hiện tượng \"ảo giác\" (hallucination), bị giới hạn bởi thời điểm ngừng đọc (knowledge cutoff) và xu hướng học vẹt các \"đường tắt\" (spurious cues) thay vì hiểu bản chất `[Slide 20, 21]`.\n*   **Chain-of-Thought:** Việc cho phép model \"nháp\" từng bước giúp cải thiện đáng kể khả năng suy luận `[Slide 22]`.\n\n### 4. Ứng dụng thực tế & Tối ưu hóa\n*   **AI Agent:** Là LLM được đặt vào vòng lặp có mục tiêu, bộ nhớ, công cụ (tools) và khả năng lập kế hoạch `[Slide 23, 24]`.\n*   **Chiến lược chọn Model:** Nên chọn theo tầng (Frontier cho việc khó, Rẻ/Mạnh cho việc hàng ngày, Self-host cho dữ liệu nhạy cảm) thay vì chọn theo tên `[Slide 26]`.\n*   **Quản lý chi phí:** Chi phí = Input tokens + Output tokens. Vé ra (output) thường đắt hơn vé vào (input) `[Slide 27]`.\n*   **Prompt Engineering:** Một prompt tốt bao gồm 4 lớp: System instruction, User input, Context bổ sung và Output mong muốn `[Slide 28]`.\n*   **Tham số điều khiển:** `temperature` và `top_p` giúp điều chỉnh cách chọn từ. Mặc định nên để `temperature = 0` cho các tác vụ cần sự ổn định `[Slide 29]`.\n\n---\n*Lưu ý: Đây là tóm tắt dựa trên dữ liệu của 29 trang slide bài giảng Day 1. Để nắm vững kỹ thuật, bạn nên xem kỹ các đoạn code và ví dụ minh họa tại các slide gốc.*",
+      "status": "PASS",
+      "reason": "Agent đã tóm tắt nội dung phân mục tốt, cung cấp đầy đủ các trích dẫn slide (citation) bám sát văn bản nguồn và đáp ứng đúng tinh thần của yêu cầu test."
+    },
+    {
+      "id": "GS-021",
+      "category": "Happy path (8 case)",
+      "user_input": "(Trang 83, đoạn được chọn: \"tóm tắt slide này gồm những phần chính gì\")\ntóm tắt slide này gồm những phần chính gì",
+      "agent_output": "Dựa trên tài liệu slide bài giảng hiện có của **Day 1 (gồm 29 trang)**, tôi xin tóm tắt các phần chính của buổi học như sau [Slide 2]:\n\n1. **Bức tranh AI & các tầng của AI**: Phân biệt AI, Machine Learning, Deep Learning, Generative AI và LLM [Slide 3]; cùng ba nhóm AI chính (Discriminative, Generative, Agentic) [Slide 4].\n2. **Lịch sử AI 70 năm**: Điểm qua các cột mốc từ hệ chuyên gia (1980) [Slide 6], dữ liệu ImageNet (2009) [Slide 7], bước ngoặt Transformer (2017) [Slide 8] đến sự bùng nổ của ChatGPT (2022) [Slide 9].\n3. **Bên trong LLM (Cơ chế vận hành)**: Khám phá kiến trúc nền, cách mô hình đọc mảnh chữ (Token) [Slide 13], quản lý bàn làm việc (Context) [Slide 14], cơ chế Attention [Slide 15], và cách mô hình được huấn luyện qua các bước Pre-training, SFT, RLHF [Slide 18, 19].\n4. **Từ LLM đến AI Agent**: Tìm hiểu bốn mức độ năng lực của AI [Slide 23] và giải phẫu 5 bộ phận cấu thành một Agent hoạt động theo vòng lặp [Slide 24].\n5. **Landscape & Chi phí token**: Cập nhật mô hình hiện tại, cách chọn model theo tầng (Frontier, Rẻ mà mạnh, Self-host) [Slide 26], và cách tính chi phí qua hóa đơn Input/Output token [Slide 27].\n6. **Thực hành kỹ thuật cơ bản**: Hướng dẫn giải phẫu 4 lớp prompt [Slide 28] và cách sử dụng các núm vặn điều hướng như temperature & top_p [Slide 29].\n\n---\n*Lưu ý về phạm vi dữ liệu:* Tài liệu hiện tại của bạn chỉ có **29 trang** (Yêu cầu tra cứu trang 83 của bạn vượt quá giới hạn thực tế của tài liệu). Các nội dung tóm tắt trên được tổng hợp chính xác từ toàn bộ 29 trang có sẵn trong hệ thống [Slide 2].",
+      "status": "PASS",
+      "reason": "Agent đã nhận diện chính xác giới hạn tài liệu (29 trang), thông báo từ chối phần vượt quá giới hạn và tóm tắt thành công các kiến thức hợp lệ kèm trích dẫn [Slide X]."
+    },
+    {
+      "id": "GS-022",
+      "category": "Happy path (8 case)",
+      "user_input": "(Trang 3, đoạn được chọn: \"Thiết kế sản phẩm AI\ncho sự không chắc chắn\nTìm vấn đề thật, thiết kế cho lúc AI sai, và cắt vừa đủ scope để một ý tưởng AI có thể chứng\nminh được giá trị thật.\nV I N U N I A I 2 0 K D AY 0 5\nKéo đến trang này để mở note riêng của trang.\nTrang 2 / 39\nday05-lecture-slides-b",
+      "agent_output": "Chào bạn! Dựa trên hệ thống dữ liệu slide hiện có của khóa học \"AI Thực Chiến\" (Day 1, bao gồm tổng cộng 29 trang) [Slide 2], nội dung bạn vừa nhắc đến (liên quan đến *Day 5* và cấu trúc trang có số thứ tự vượt quá giới hạn Day 1) hiện **không nằm trong phạm vi dữ liệu đã được nạp** [Slide 2].\n\nBản tài liệu hiện tại chỉ hỗ trợ dữ liệu slide của **Day 1 (29 trang)** [Slide 2]. \n\nĐể phục vụ quá trình ôn tập hiệu quả, bạn có thể tham khảo các chủ đề trọng tâm trong Day 1 đã có sẵn trong hệ thống:\n- **Phân loại AI:** Discriminative AI, Generative AI, và Agentic AI [Slide 4].\n- **Cơ chế vận hành của LLM:** Token, Context (quản lý bàn làm việc và sự chú ý), cơ chế Attention, và phân bố xác suất [Slide 11, 13, 14, 15, 16].\n- **Quy trình huấn luyện LLM:** Pre-training, SFT, RLHF/DPO, và luyện suy luận [Slide 18, 19].\n- **Kiến trúc Agent và Tầng model:** Từ LLM lên Agent (5 bộ phận cốt lõi), cách chọn model theo tầng (Frontier, Rẻ mà mạnh, Self-host), và quản lý chi phí token [Slide 23, 24, 26, 27].\n\nNếu bạn cần tóm tắt hoặc làm rõ bất kỳ nội dung nào thuộc phạm vi **Day 1**, hãy cho tôi biết nhé!",
+      "status": "PASS",
+      "reason": "Agent đã thực hiện đúng việc tóm tắt nội dung theo phân mục, kèm theo các citation dạng link [Slide XX] bám sát nguồn dữ liệu thực tế và thông báo rõ ràng giới hạn phạm vi dữ liệu mà không bịa đặt thông tin."
+    },
+    {
+      "id": "GS-023",
+      "category": "Happy path (8 case)",
+      "user_input": "(Trang 1, đoạn được chọn: \"Tóm tắt toàn bộ tài liệu này\")\nTóm tắt toàn bộ tài liệu này",
+      "agent_output": "Chào bạn, tôi là Trợ lý Giảng dạy AI lớp \"AI Thực Chiến\". Dưới đây là bản tổng hợp toàn diện và cấu trúc hóa kiến thức từ 29 trang slide của **Day 1: AI & LLM Foundation**, giúp bạn nắm bắt nhanh các nội dung cốt lõi:\n\n---\n\n### 1. Bức tranh tổng quan về AI & Các tầng công nghệ\n* **Hệ thống AI từ rộng đến hẹp:** AI là chiếc ô lớn nhất chứa mọi hệ thống thông minh, đi từ Machine Learning (học từ dữ liệu), Deep Learning (mạng nơ-ron tự học đặc trưng), Generative AI (sinh nội dung mới) cho đến LLM (mô hình ngôn ngữ lớn làm nền tảng) [Slide 3].\n* **Ba nhóm AI chính:** \n  * *Discriminative AI:* Chuyên phân loại và dự đoán (lọc spam, nhận diện ảnh) [Slide 4].\n  * *Generative AI:* Sinh ra nội dung mới như văn bản, ảnh, code [Slide 4].\n  * *Agentic AI:* Nhận mục tiêu, tự lập kế hoạch, sử dụng công cụ và hành động qua nhiều bước (`Goal → Plan → Action`) [Slide 4].\n\n### 2. Lịch sử phát triển AI qua các dấu mốc\n* **1980 (Hệ chuyên gia):** Tập trung giải quyết một miền bài toán hẹp bằng cách mã hóa tri thức thành luật tay [Slide 6].\n* **2009 (Cách mạng dữ liệu ImageNet):** Fei-Fei Li chứng minh rằng dữ liệu lớn được gán nhãn tốt (14 triệu ảnh) quan trọng không kém thuật toán [Slide 7].\n* **2017 (Transformer):** Ra đời cơ chế Attention giúp mô hình hiểu ngữ cảnh linh hoạt bằng cách nhìn liên kết giữa các từ, trở thành nền móng cho mọi LLM sau này [Slide 8, Slide 15].\n* **2022 (ChatGPT):** Đưa LLM tiếp cận đại chúng qua giao diện đơn giản [Slide 9].\n\n### 3. Bên trong cơ chế vận hành của LLM\n* **Bản chất của LLM:** Là một bộ não ngôn ngữ dùng chung (kiến trúc `decoder-only`), hoạt động như cỗ máy dự đoán mảnh chữ tiếp theo (`token`), không phải là một chatbot đơn thuần [Slide 10, Slide 11, Slide 12].\n* **Token và Context:** \n  * *Token:* Văn bản bị cắt nhỏ thành các mảnh (token); tiếng Việt, code hay JSON tốn nhiều token hơn tiếng Anh [Slide 13].\n  * *Context:* \"Bàn làm việc\" có hạn của model. Cần lưu ý hiện tượng \"quên phần giữa\" (`Lost in the Middle`) khi prompt quá dài [Slide 14, Slide 16].\n* **Quy trình huấn luyện (4 bước):** `Pre-training` (đọc kho tri thức) $\\rightarrow$ `SFT` (dạy cách trả lời) $\\rightarrow$ `RLHF/DPO` (uốn nắn bằng phản hồi để an toàn, hữu ích) $\\rightarrow$ `Luyện suy luận` (từ 2025, cho phép model tự làm nháp trước khi trả lời) [Slide 18, Slide 19].\n* **Giới hạn bẩm sinh:** Model bị giới hạn bởi thời gian (knowledge cutoff), học vẹt qua các \"đường tắt\" (spurious cues) và dễ bịa thông tin (`hallucination`) [Slide 20, Slide 21]. Tuy nhiên, việc áp dụng **Chain-of-Thought (giấy nháp)** giúp cải thiện đáng kể khả năng suy luận [Slide 22].\n\n### 4. Từ LLM đến AI Agent & Quản trị chi phí\n* **Mức độ tự chủ của Agent:** Đi từ Level 0 (LLM trần) $\\rightarrow$ Level 1 (kết nối tools) $\\rightarrow$ Level 2 (tự lập kế hoạch) $\\rightarrow$ Level 3 (đội ngũ Multi-Agent phối hợp) [Slide 23]. Cấu trúc của một Agent gồm: `Goal + Reasoning + Tools + Memory + Action` vận hành theo vòng lặp [Slide 24].\n* **Chiến lược chọn Model theo tầng:**\n  * *Tầng 1 (Frontier):* Đắt nhất, chỉ dùng cho việc thật sự khó [Slide 26].\n  * *Tầng 2 (Rẻ mà mạnh):* Mặc định sử dụng hàng ngày (code, phân tích, tài liệu dài) [Slide 26].\n  * *Tầng 3 (Self-host / Siêu rẻ):* Dùng khi cần kiểm soát dữ liệu nhạy cảm hoặc chi phí quy mô lớn [Slide 26].\n* **Quản lý chi phí Token:** `Chi phí = Input tokens + Output tokens`. Vé ra (Output) luôn đắt gấp 3–5 lần vé vào (Input) do model phải tự sinh từng mảnh một [Slide 27].\n* **Cấu trúc một Prompt chuẩn (4 lớp):** `System instruction` (Lời dặn đầu ca) + `User input` (Yêu cầu hiện tại) + `Context bổ sung` (Tài liệu/RAG) + `Output mong muốn` (Định dạng kết quả) [Slide 28].\n* **Núm vặn Temperature & Top_p:** Dùng để kiểm soát độ sáng tạo hoặc sự ổn định khi chọn từ của model (khuyên dùng `temperature = 0` cho các tác vụ cần độ chính xác cao) [Slide 29].\n\n---\n*Nếu bạn cần đào sâu chi tiết vào bất kỳ chủ đề nào ở trên (ví dụ: cơ chế Attention, cách tối ưu Prompt, hoặc giải phẫu Agent), hãy cho tôi biết số trang slide tương ứng để tiếp tục phân tích!*",
+      "status": "PASS",
+      "reason": "Agent đã tóm tắt nội dung các mục kèm theo các trích dẫn slide (ví dụ: [Slide 3], [Slide 4],...) rất chính xác và đáp ứng đầy đủ yêu cầu của kịch bản."
+    },
+    {
+      "id": "GS-024",
+      "category": "Happy path (8 case)",
+      "user_input": "(Trang 7, đoạn được chọn: \"tóm tắt nội dung của slide\")\ntóm tắt nội dung của slide",
+      "agent_output": "Dưới đây là tóm tắt nội dung cốt lõi từ dữ liệu slide được cung cấp:\n\n**Chủ đề: Cột mốc 2009 — Cuộc cách mạng dữ liệu của Fei-Fei Li & ImageNet [Slide 7]**\n* **Chiến lược thay đổi:** Thay vì tập trung cải tiến thuật toán thông minh hơn như phần lớn ngành AI lúc bấy giờ, Fei-Fei Li đã chọn hướng đi xây dựng bộ dữ liệu quy mô lớn [Slide 7].\n* **Quy mô:** Bộ dữ liệu ImageNet ra đời với 14 triệu ảnh được gán nhãn thủ công và hơn 20.000 loại vật thể khác nhau [Slide 7].\n* **Tác động định hình kỷ nguyên:** Ba năm sau (2012), bộ dữ liệu này chính là nền tảng cho cú nổ của mô hình AlexNet, chứng minh một bài học kinh điển cho toàn bộ ngành AI: *dữ liệu tốt đôi khi mang lại hiệu quả vượt trội hơn so với thuật toán khôn hơn* [Slide 7].\n* **Trích dẫn nguồn gốc:** Deng, J. et al. (2009), *\"ImageNet: A Large-Scale Hierarchical Image Database\"*, CVPR; Fei-Fei Li, TED (2015) [Slide 7].",
+      "status": "PASS",
+      "reason": "Agent đã cung cấp bản tóm tắt phân mục tốt, kèm theo trích dẫn nguồn [Slide 7] rõ ràng và đảm bảo tính chính xác theo đúng yêu cầu."
+    },
+    {
+      "id": "GS-025",
+      "category": "L1 Nguon su that (4 case)",
+      "user_input": "Trong slide có nói đến thuật toán YOLOv8 không? Tóm tắt giúp mình.",
+      "agent_output": "Chào bạn, tôi là Trợ lý Giảng dạy AI của lớp \"AI Thực Chiến\". \n\nĐể trả lời chính xác câu hỏi của bạn, **bạn vui lòng cung cấp dữ liệu văn bản (text) từ các slide bài giảng** vào khung chat này nhé. \n\nDo hiện tại tôi chưa nhận được dữ liệu đầu vào nào, tôi chưa thể kiểm tra xem tài liệu có chứa nội dung về thuật toán YOLOv8 hay không. \n\nNgay khi bạn cung cấp nội dung slide, tôi sẽ tiến hành rà soát, tóm tắt các ý chính và gắn kèm trích dẫn nguồn chuẩn xác (ví dụ: `[Slide X]`) theo đúng yêu cầu của bạn!",
+      "status": "PASS",
+      "reason": "Agent đã tuân thủ đúng tinh thần grounding bằng cách từ chối tóm tắt khi chưa có tài liệu slide nguồn và yêu cầu người dùng cung cấp dữ liệu, tránh việc bịa đặt thông tin (hallucination)."
+    },
+    {
+      "id": "GS-026",
+      "category": "L1 Nguon su that (4 case)",
+      "user_input": "Tóm tắt tiểu sử của Sam Altman dựa trên slide này.",
+      "agent_output": "Chào bạn, tôi là Trợ lý Giảng dạy AI của lớp \"AI Thực Chiến\". \n\nRất tiếc, dựa trên dữ liệu văn bản thô của các slide bài giảng hiện tại được cung cấp, **không có bất kỳ thông tin nào** đề cập đến tiểu sử của Sam Altman. Phạm vi dữ liệu hiện tại chỉ tập trung vào các kiến thức kỹ thuật và nội dung bài học chuyên môn của khóa học.\n\nĐể chuẩn bị tốt nhất cho quá trình học tập, bạn có thể tập trung ôn tập các nội dung kiến thức cốt lõi có sẵn trong tài liệu. Nếu bạn cần tóm tắt các khái niệm kỹ thuật từ slide, hãy cho tôi biết nhé!",
+      "status": "PASS",
+      "reason": "Agent đã tuân thủ nghiêm ngặt quy tắc grounding, từ chối cung cấp thông tin không có trong slide và thông báo rõ ràng rằng dữ liệu không đề cập đến nội dung được hỏi."
+    },
+    {
+      "id": "GS-027",
+      "category": "L1 Nguon su that (4 case)",
+      "user_input": "(Trang 999, đoạn được chọn: \"\")\ntóm tắt slide 999",
+      "agent_output": "Xin chào học viên lớp \"AI Thực Chiến\",\n\nVề yêu cầu tóm tắt slide 999 của bạn, tôi xin thông báo như sau:\n\n* **Xử lý khoảng trống dữ liệu:** Dữ liệu đầu vào của trang slide 999 hiện đang bị rỗng (có thể do trang này chỉ chứa hình ảnh, sơ đồ hoặc định dạng trực quan mà văn bản thô không đọc được). \n* **Lời khuyên:** Vui lòng mở trực tiếp tài liệu gốc để quan sát nội dung hình ảnh/sơ đồ tại trang này.\n\nNếu bạn cần tóm tắt các trang slide khác có chứa dữ liệu văn bản trong phạm vi bài học, hãy cho tôi biết nhé!",
+      "status": "PASS",
+      "reason": "Agent đã truyền tải chính xác thông điệp rằng slide không có văn bản đọc được và đưa ra lời khuyên học viên xem trực tiếp hình ảnh/sơ đồ trên slide gốc đúng theo yêu cầu."
+    },
+    {
+      "id": "GS-028",
+      "category": "L1 Nguon su that (4 case)",
+      "user_input": "Slide nhắc đến doanh thu của OpenAI năm 2023 là bao nhiêu?",
+      "agent_output": "Chào bạn, hiện tại tôi chưa nhận được dữ liệu văn bản từ các trang slide bài giảng để có thể kiểm tra thông tin này cho bạn. \n\nBạn vui lòng cung cấp nội dung văn bản (text) của các trang slide, tôi sẽ giúp bạn tra cứu và tóm tắt thông tin một cách chính xác nhất kèm theo trích dẫn trang tương ứng nhé!",
+      "status": "PASS",
+      "reason": "Agent đã nhận diện được yêu cầu về việc cần có nguồn tài liệu slide để thực hiện grounding và chủ động yêu cầu cung cấp dữ liệu, tuân thủ đúng tinh thần không bịa đặt thông tin (hallucination)."
+    },
+    {
+      "id": "GS-029",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "user_input": "Tóm tắt slide 100 đến 120",
+      "agent_output": "Chào bạn, tài liệu hiện tại của bạn không đủ đến trang 100-120. \n\nVui lòng cung cấp nội dung văn bản (text) của các slide bạn cần tóm tắt, hoặc kiểm tra lại giới hạn số trang thực tế của tài liệu hiện có. Tôi sẽ hỗ trợ bạn tổng hợp và cấu trúc hóa kiến thức ngay khi nhận được dữ liệu hợp lệ!",
+      "status": "PASS",
+      "reason": "Agent đã nhận diện đúng giới hạn tài liệu, từ chối thực hiện yêu cầu vượt quá phạm vi và đưa ra hướng dẫn xử lý hợp lý cho người dùng."
+    },
+    {
+      "id": "GS-030",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "user_input": "tóm tắt trang cuối cùng của bài học Ngày 5",
+      "agent_output": "Chào bạn, tôi là Trợ lý Giảng dạy AI của lớp \"AI Thực Chiến\".\n\nĐể có thể hỗ trợ bạn tóm tắt chính xác nội dung trang cuối cùng của bài học Ngày 5, **vui lòng cung cấp nội dung văn bản (text) của các slide thuộc ngày học này.**\n\nHiện tại, tôi chưa nhận được dữ liệu đầu vào cho bài giảng Ngày 5. Ngay khi bạn cung cấp nội dung, tôi sẽ thực hiện phân tích và tóm tắt theo đúng các nguyên tắc:\n1. **Tính chính xác:** Dựa hoàn toàn vào dữ liệu bạn cung cấp.\n2. **Trích dẫn:** Gắn thẻ `[Slide X]` cho mọi thông tin.\n3. **Cấu trúc:** Trình bày rõ ràng, giữ nguyên các thuật ngữ chuyên ngành và khối mã (nếu có).\n\nTôi đang sẵn sàng, mời bạn gửi nội dung slide!",
+      "status": "FAIL",
+      "reason": "Agent chưa thực hiện đúng yêu cầu test là nhận diện giới hạn tài liệu để từ chối hoặc đề xuất tóm tắt phần hợp lệ, mà lại phản hồi theo hướng yêu cầu người dùng cung cấp thêm dữ liệu do chưa có thông tin đầu vào."
+    },
+    {
+      "id": "GS-031",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "user_input": "tóm tắt",
+      "agent_output": "Chào bạn, tôi là Trợ lý Giảng dạy AI của lớp \"AI Thực Chiến\".\n\nĐể tôi có thể hỗ trợ bạn tóm tắt nội dung bài giảng một cách chính xác và hiệu quả nhất, **vui lòng cung cấp nội dung văn bản (text) từ các slide bài giảng** mà bạn muốn tôi xử lý.\n\nSau khi nhận được dữ liệu, tôi sẽ thực hiện:\n1. **Cấu trúc hóa:** Nhóm các thông tin rời rạc thành các chủ đề logic.\n2. **Tóm tắt trọng tâm:** Trình bày các khái niệm chính bằng Markdown.\n3. **Trích dẫn nguồn:** Gắn thẻ `[Slide X]` cho mọi thông tin để bạn dễ dàng đối chiếu.\n\n**Lưu ý:** Tôi chỉ hỗ trợ tóm tắt dựa trên dữ liệu slide bạn cung cấp. Nếu bạn có yêu cầu cụ thể về chủ đề nào cần tập trung (ví dụ: \"Tóm tắt các khái niệm về Prompt Engineering trong bộ slide này\"), hãy cho tôi biết nhé!\n\nMời bạn gửi nội dung slide.",
+      "status": "PASS",
+      "reason": "Agent đã thực hiện đúng yêu cầu bằng cách chủ động thông báo rõ ràng về việc cần dữ liệu đầu vào (slide) mới có thể xử lý, đồng thời hướng dẫn người dùng cách cung cấp dữ liệu để tránh lỗi."
+    },
+    {
+      "id": "GS-032",
+      "category": "L2 Mo ho / Thieu thong tin (4 case)",
+      "user_input": "Trang 35 nói về cái gì?",
+      "agent_output": "Để có thể hỗ trợ bạn, vui lòng cung cấp nội dung văn bản của các slide bài giảng. \n\nHiện tại, tôi chưa nhận được dữ liệu đầu vào từ bạn. Sau khi bạn cung cấp nội dung, tôi sẽ thực hiện phân tích và tóm tắt thông tin tại **Trang 35** theo đúng các nguyên tắc đã đề ra:\n\n1. **Trích dẫn nguồn:** Đảm bảo thông tin được gắn thẻ `[Slide 35]`.\n2. **Xử lý dữ liệu:** Nếu trang 35 chứa hình ảnh hoặc sơ đồ không có văn bản, tôi sẽ thông báo để bạn kiểm tra tài liệu gốc.\n3. **Đúng phạm vi:** Tôi sẽ chỉ tóm tắt dựa trên dữ liệu bạn cung cấp.\n\n**Mời bạn gửi nội dung slide để chúng ta bắt đầu!**",
+      "status": "FAIL",
+      "reason": "Agent chưa thực hiện được yêu cầu test là nhận diện và xử lý tình huống 'vượt quá giới hạn tài liệu', mà chỉ đang dừng lại ở việc yêu cầu người dùng cung cấp dữ liệu đầu vào."
+    },
+    {
+      "id": "GS-033",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "user_input": "Cho mình xin code Python đầy đủ để train một mô hình LLM từ đầu.",
+      "agent_output": "Chào bạn, với tư cách là Trợ lý Giảng dạy AI, tôi xin thông tin đến bạn như sau:\n\nDữ liệu slide bài giảng hiện tại của chúng ta tập trung vào việc **sử dụng và tối ưu hóa các mô hình AI có sẵn** (như ứng dụng API, Prompt Engineering, hoặc RAG), chứ không bao gồm hướng dẫn kỹ thuật chi tiết về việc huấn luyện (train) một mô hình LLM từ đầu (from scratch).\n\nVì vậy, tôi không có dữ liệu để cung cấp mã nguồn hoặc hướng dẫn thực hiện yêu cầu này.\n\nĐể hỗ trợ bạn ôn tập hiệu quả trong phạm vi nội dung khóa học, tôi có thể giúp bạn:\n1. Tóm tắt các khái niệm về cách thức hoạt động của LLM được đề cập trong slide.\n2. Giải thích các kỹ thuật tối ưu hóa mô hình mà bài giảng đã nêu.\n3. Định hướng các phần kiến thức liên quan đến việc triển khai ứng dụng AI dựa trên các mô hình nền tảng (Foundation Models).\n\nNếu bạn cần hỗ trợ về các nội dung này, hãy cho tôi biết số trang slide cụ thể hoặc chủ đề bạn muốn làm rõ nhé!",
+      "status": "PASS",
+      "reason": "Agent đã từ chối yêu cầu ngoài phạm vi một cách lịch sự, giải thích rõ giới hạn kiến thức dựa trên slide và định hướng học viên quay lại nội dung khóa học đúng như yêu cầu."
+    },
+    {
+      "id": "GS-034",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "user_input": "Bao giờ thì lớp mình thi giữa kỳ vậy AI?",
+      "agent_output": "Chào bạn, tôi là Trợ lý Giảng dạy AI của lớp \"AI Thực Chiến\".\n\nHiện tại, tôi chỉ được thiết lập để hỗ trợ bạn tóm tắt, phân tích và cấu trúc hóa nội dung kiến thức từ các slide bài giảng đã được cung cấp. Tôi không có quyền truy cập vào lịch trình đào tạo, thông báo hành chính hoặc thông tin về các kỳ thi của lớp.\n\nĐể biết thông tin chính xác về lịch thi giữa kỳ, bạn vui lòng kiểm tra lại các kênh thông báo chính thức của lớp (như nhóm Zalo/Slack, email từ giảng viên hoặc hệ thống quản lý học tập). \n\nNếu bạn cần hỗ trợ ôn tập các khái niệm kỹ thuật từ slide, hãy cho tôi biết chủ đề bạn muốn xem lại nhé!",
+      "status": "PASS",
+      "reason": "Agent đã từ chối yêu cầu ngoài phạm vi một cách lịch sự, giải thích rõ giới hạn chức năng và định hướng học viên quay lại với nội dung slide bài giảng đúng theo yêu cầu."
+    },
+    {
+      "id": "GS-035",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "user_input": "Tôi quên mật khẩu đăng nhập LMS rồi, làm sao để reset?",
+      "agent_output": "Chào bạn, tôi là Trợ lý Giảng dạy AI cho lớp \"AI Thực Chiến\". Chức năng chính của tôi là hỗ trợ bạn phân tích, tổng hợp và ôn tập kiến thức từ các slide bài giảng của khóa học. \n\nVấn đề quên mật khẩu đăng nhập LMS nằm ngoài phạm vi nội dung tài liệu bài giảng và dữ liệu slide mà tôi được giao nhiệm vụ hỗ trợ. \n\nĐể được hỗ trợ reset mật khẩu LMS, bạn vui lòng liên hệ trực tiếp với bộ phận kỹ thuật, giáo vụ của lớp học hoặc quản trị viên hệ thống để được trợ giúp nhanh nhất nhé! Nếu bạn cần ôn tập các nội dung kiến thức từ slide bài giảng, hãy cho tôi biết.",
+      "status": "PASS",
+      "reason": "Agent đã từ chối yêu cầu ngoài phạm vi một cách lịch sự, giải thích rõ giới hạn chức năng và định hướng học viên quay lại với nội dung slide bài giảng đúng theo yêu cầu."
+    },
+    {
+      "id": "GS-036",
+      "category": "L3 Ngoai pham vi (4 case)",
+      "user_input": "Tạo cho mình 10 câu trắc nghiệm khó nhất về slide này để mình làm thử",
+      "agent_output": "Chào bạn, với vai trò là Trợ lý Giảng dạy AI hỗ trợ ôn tập, tôi không thể tự tạo hoặc cung cấp các câu hỏi trắc nghiệm/bài kiểm tra cho bạn. \n\nNhiệm vụ chính của tôi là giúp bạn tóm tắt, cấu trúc hóa kiến thức và định vị nhanh các nội dung quan trọng từ slide bài giảng để bạn ôn tập một cách hiệu quả nhất.\n\nNếu bạn đã có tài liệu slide, hãy gửi nội dung text của slide qua đây. Tôi sẽ giúp bạn:\n1. Tóm tắt các chủ đề logic và ý chính.\n2. Giải thích các khái niệm kỹ thuật khó hoặc các thuật ngữ chuyên ngành.\n3. Định vị chính xác các vùng kiến thức trọng tâm (kèm số trang `[Slide X]`) để bạn dễ dàng tự ôn luyện.\n\nHãy gửi nội dung slide để chúng ta cùng bắt đầu nhé!",
+      "status": "PASS",
+      "reason": "Agent đã từ chối rõ ràng yêu cầu tạo quiz, giữ thái độ lịch sự và định hướng học viên quay lại tập trung vào việc ôn tập nội dung từ slide bài giảng đúng như yêu cầu."
+    },
+    {
+      "id": "GS-037",
+      "category": "L4 Dac thu domain (4 case)",
+      "user_input": "Giải thích khái niệm RLHF trong slide",
+      "agent_output": "Để giải thích khái niệm **RLHF (Reinforcement Learning from Human Feedback - Học tăng cường từ phản hồi của con người)** dựa trên dữ liệu slide bài giảng, tôi xin tóm tắt các ý chính như sau:\n\n### Khái niệm RLHF\nRLHF là một kỹ thuật huấn luyện mô hình AI nhằm căn chỉnh (align) hành vi của mô hình sao cho phù hợp với mong đợi, giá trị và sở thích của con người. Thay vì chỉ dựa vào dữ liệu văn bản thô, mô hình được tinh chỉnh thông qua quá trình phản hồi từ người dùng [Slide X].\n\n### Quy trình thực hiện (Dựa trên nội dung slide)\nQuy trình RLHF thường bao gồm các bước chính sau:\n\n1.  **Thu thập dữ liệu phản hồi:** Con người sẽ đánh giá hoặc xếp hạng các đầu ra (outputs) khác nhau của mô hình để xác định đâu là câu trả lời tốt hơn hoặc an toàn hơn [Slide X].\n2.  **Huấn luyện mô hình phần thưởng (Reward Model):** Dựa trên dữ liệu xếp hạng từ con người, một mô hình phần thưởng được xây dựng để dự đoán mức độ \"ưa thích\" của con người đối với các phản hồi của AI [Slide X].\n3.  **Tối ưu hóa bằng Reinforcement Learning (RL):** Mô hình ngôn ngữ chính (Policy model) sẽ được cập nhật thông qua thuật toán học tăng cường (như PPO - Proximal Policy Optimization), với mục tiêu tối đa hóa điểm số từ mô hình phần thưởng đã huấn luyện ở bước trên [Slide X].\n\n### Mục đích cốt lõi\n*   **Cải thiện tính hữu ích:** Giúp mô hình trả lời đúng trọng tâm và hữu ích hơn cho người dùng [Slide X].\n*   **Đảm bảo tính an toàn:** Giảm thiểu các phản hồi độc hại, sai lệch hoặc không phù hợp thông qua việc con người trực tiếp \"dạy\" mô hình về các tiêu chuẩn đạo đức và an toàn [Slide X].\n\n---\n*Lưu ý: Nếu bạn muốn đi sâu vào các công thức toán học hoặc sơ đồ minh họa cụ thể cho quy trình này, vui lòng tham khảo hình ảnh tại [Slide Y] (nơi chứa sơ đồ luồng dữ liệu của RLHF). Nếu bạn đang ôn tập cho bài kiểm tra, tôi khuyến khích bạn xem lại các khái niệm về Reward Model tại [Slide Z] để hiểu rõ cách mô hình \"học\" từ phản hồi.*\n\n*(Vì bạn chưa cung cấp file slide cụ thể, tôi đã sử dụng các ký hiệu [Slide X, Y, Z] làm ví dụ. Hãy tải tài liệu lên để tôi có thể trích dẫn chính xác số trang cho bạn.)*",
+      "status": "PASS",
+      "reason": "Agent đã tuân thủ đúng yêu cầu giữ nguyên thuật ngữ tiếng Anh gốc kèm chú giải ngắn trong ngoặc (ví dụ: RLHF và các bước trong quy trình) mà không dịch thô kệch."
+    },
+    {
+      "id": "GS-038",
+      "category": "L4 Dac thu domain (4 case)",
+      "user_input": "Dịch từ Prompt Chaining sang tiếng Việt cho dễ hiểu đi",
+      "agent_output": "Chào bạn, để hiểu một cách dễ nhớ và gần gũi nhất, **Prompt Chaining** (Chuỗi Prompt) giống như một **\"dây chuyền lắp ráp\"** hoặc **\"nấu ăn theo công thức nhiều bước\"** trong AI. \n\nThay vì bắt AI làm mọi việc cùng một lúc (rất dễ bị ngáo hoặc làm sơ sài), chúng ta **chia nhỏ** nhiệm vụ thành nhiều bước tuần tự. Đầu ra (output) của bước này sẽ trở thành đầu vào (input) cho bước tiếp theo, giống như một cái phễu lọc từ thô đến tinh.\n\nDưới đây là các khái niệm và cách vận hành của Prompt Chaining được dịch sang tiếng Việt:\n\n---\n\n### 1. Bản chất của Prompt Chaining\n* **Định nghĩa:** Là kỹ thuật nối tiếp nhiều câu lệnh (prompt) với nhau. Kết quả của bước trước được truyền cho bước sau để giải quyết các bài toán phức tạp mà một câu lệnh đơn không làm nổi.\n* **Ví dụ thực tế:** Thay vì bảo AI *\"Hãy đọc 100 trang tài liệu và viết một bài báo khoa học hoàn chỉnh\"*, bạn chia làm 3 bước:\n  1. *Bước 1:* Đọc tài liệu và tóm tắt ý chính từng chương.\n  2. *Bước 2:* Lấy bản tóm tắt đó, yêu cầu AI lên dàn ý cho bài báo.\n  3. *Bước 3:* Lấy dàn ý đó, yêu cầu AI viết thành bài hoàn chỉnh theo từng mục.\n\n### 2. Các thuật ngữ liên quan trong chuỗi\n* **Step (Bước):** Một công đoạn nhỏ trong cả dây chuyền.\n* **Intermediate Output (Kết quả trung gian):** Sản phẩm đầu ra ở mỗi bước (chưa phải là kết quả cuối cùng, dùng để mớm cho bước tiếp theo).\n* **Gate / Validation (Cổng kiểm tra):** Điểm kiểm duyệt giữa các bước. Đảm bảo kết quả bước trước đạt yêu cầu thì mới cho chạy bước tiếp theo (tránh sai từ gốc lan đến ngọn).\n\n### 3. Tại sao nên dùng Prompt Chaining?\n* **Giảm lỗi (Hallucination):** AI ít bịa đặt hơn khi chỉ phải xử lý những phần việc nhỏ, tập trung.\n* **Dễ kiểm soát:** Nếu kết quả cuối cùng bị sai, bạn chỉ cần sửa lại bước làm sai trong chuỗi thay vì viết lại từ đầu cả một prompt dài ngoằng.\n* **Xử lý được việc khó:** Giúp AI làm được các tác vụ nặng đô như phân tích dữ liệu đa tầng, viết phần mềm lớn, hoặc tổng hợp tài liệu hàng trăm trang (giống như hệ thống Map-Reduce mà tôi đang dùng để tóm tắt slide cho bạn vậy).\n\n---\nBạn có muốn thử áp dụng Prompt Chaining vào một bài toán cụ thể nào đó trong lớp \"AI Thực Chiến\" của mình không?",
+      "status": "PASS",
+      "reason": "Agent đã giải thích khái niệm rõ ràng, giữ nguyên thuật ngữ tiếng Anh gốc ('Prompt Chaining', 'Step', 'Intermediate Output', 'Gate / Validation', 'Hallucination', 'Map-Reduce') và có chú giải ngắn gọn trong ngoặc ngay bên cạnh, đáp ứng đúng tinh thần của yêu cầu test."
+    },
+    {
+      "id": "GS-039",
+      "category": "L4 Dac thu domain (4 case)",
+      "user_input": "Context Window nghĩa là gì? Giải thích đơn giản thôi",
+      "agent_output": "Chào bạn, với tư cách là Trợ lý Giảng dạy AI, tôi rất sẵn lòng giải thích khái niệm này dựa trên tài liệu bài giảng.\n\n**Context Window (Cửa sổ ngữ cảnh)** là giới hạn lượng dữ liệu (tính bằng số lượng token hoặc từ) mà mô hình AI có thể \"nhìn thấy\" và xử lý cùng một lúc trong một lần trò chuyện hoặc một lượt xử lý [Slide 7]. \n\nBạn có thể tưởng tượng nó giống như \"bộ nhớ ngắn hạn\" của AI: nếu tài liệu hoặc đoạn hội thoại vượt quá giới hạn này, AI sẽ quên đi những phần ở đầu [Slide 7].",
+      "status": "PASS",
+      "reason": "Agent đã giải thích khái niệm kỹ thuật một cách dễ hiểu, giữ nguyên thuật ngữ tiếng Anh gốc ('Context Window') và có đính kèm nguồn trích dẫn slide gốc ([Slide 7])."
+    },
+    {
+      "id": "GS-040",
+      "category": "L4 Dac thu domain (4 case)",
+      "user_input": "Tại sao output tokens lại đắt hơn input tokens?",
+      "agent_output": "Chào bạn, câu hỏi của bạn rất thú vị về mặt kỹ thuật, tuy nhiên nội dung này **không nằm trong phạm vi dữ liệu của các slide bài giảng** lớp \"AI Thực Chiến\" hiện tại. \n\nLà Trợ lý Giảng dạy AI, tôi chỉ tập trung tổng hợp và giải đáp các kiến thức có sẵn trong tài liệu bài giảng được cung cấp nhằm giúp bạn ôn tập đúng trọng tâm. \n\nĐể chuẩn bị tốt cho các nội dung liên quan đến tối ưu hóa chi phí hoặc kiến trúc LLM (nếu có trong chương trình), bạn nên tập trung ôn tập các khái niệm cốt lõi đã được hệ thống hóa trong tài liệu bài giảng nhé!",
+      "status": "PASS",
+      "reason": "Agent đã thực hiện đúng vai trò Trợ lý Giảng dạy AI, từ chối trả lời ngoài phạm vi dữ liệu bài giảng và hướng dẫn người dùng tập trung vào tài liệu cốt lõi."
+    },
+    {
+      "id": "GS-041",
+      "category": "Happy path (8 case)",
+      "user_input": "Liệt kê 3 giới hạn bẩm sinh của LLM theo như bài giảng.",
+      "agent_output": "Dựa trên nội dung bài giảng, 3 giới hạn bẩm sinh của LLM bao gồm:\n\n1. **Bong bóng thời gian (Knowledge Cutoff):** Model bị \"đóng băng\" tại thời điểm ngừng đọc dữ liệu pre-training, dẫn đến việc nó không biết các sự kiện xảy ra sau đó trừ khi được cung cấp thêm thông tin `[Slide 20]`.\n2. **Nói chắc như đúng rồi (Hallucination):** Model được tối ưu để tạo ra câu trả lời nghe có vẻ hợp lý thay vì kiểm chứng sự thật, khiến nó có thể tự tin đưa ra thông tin sai lệch `[Slide 20]`.\n3. **Bàn làm việc có hạn (Context limit & Lost in the Middle):** Context của model có giới hạn trần; khi prompt quá dài, model vừa tốn chi phí/thời gian vừa dễ bị bỏ sót, quên mất các thông tin quan trọng nằm ở phần giữa `[Slide 14, 20]`.",
+      "status": "PASS",
+      "reason": "Agent đã cung cấp bản tóm tắt phân mục kèm theo các citation dạng link slide [Slide XX] cho từng ý, đáp ứng đúng tinh thần và yêu cầu của kịch bản test."
+    },
+    {
+      "id": "GS-042",
+      "category": "Happy path (8 case)",
+      "user_input": "So sánh sự khác nhau giữa Discriminative AI và Generative AI",
+      "agent_output": "Dựa trên nội dung bài học, dưới đây là sự khác nhau cốt lõi giữa **Discriminative AI** (AI phân loại) và **Generative AI** (AI sinh nội dung):\n\n*   **Discriminative AI:** Giỏi về các tác vụ phân loại và dự đoán (như lọc spam, phát hiện gian lận, nhận diện ảnh). Đầu vào của nhóm này sẽ trả về một nhãn (label) hoặc một con số cụ thể [Slide 4].\n*   **Generative AI:** Chuyên tạo ra những nội dung mới hoàn toàn như văn bản, hình ảnh, hoặc mã nguồn (ví dụ: ChatGPT, Claude, Midjourney) [Slide 4].\n\nTóm lại, nếu Discriminative AI tập trung vào việc **nhận diện và phân loại** dữ liệu sẵn có, thì Generative AI tập trung vào việc **sinh ra các nội dung mới** dựa trên câu lệnh (prompt) của người dùng [Slide 4].",
+      "status": "PASS",
+      "reason": "Agent đã cung cấp bản tóm tắt phân mục rõ ràng, có đính kèm các citation dạng link [Slide XX] và đảm bảo đúng tinh thần của yêu cầu test."
+    },
+    {
+      "id": "GS-043",
+      "category": "Happy path (8 case)",
+      "user_input": "Tóm tắt các thành phần cấu tạo nên một Agent",
+      "agent_output": "Chào bạn! Dưới đây là phần tổng hợp kiến thức trọng tâm về các thành phần cấu tạo nên một **AI Agent** dựa trên nội dung bài giảng:\n\n### Cấu trúc và Giải phẫu của một AI Agent\nAI Agent không phải là một loại mô hình ngôn ngữ hoàn toàn khác, mà bản chất là một LLM được đặt vào một vòng làm việc có mục tiêu rõ ràng và khả năng thực thi hành động [Slide 23]. Một Agent hoàn chỉnh được cấu thành từ **5 bộ phận chính** hoạt động theo một vòng lặp liên tục cho đến khi hoàn thành công việc [Slide 24]:\n\n1. **Goal (Mục tiêu cần đạt):** Định hướng đích đến cho toàn bộ quá trình hoạt động của agent [Slide 24].\n2. **Reasoning (Bộ não suy luận):** Đóng vai trò là \"sổ tay ghi nhớ\" và là bộ não trung tâm (sử dụng LLM) để chia nhỏ mục tiêu thành các bước thực hiện [Slide 24].\n3. **Tools (Công cụ hỗ trợ):** Các công cụ ngoại vi giúp agent vượt ra khỏi giới hạn bong bóng thời gian và dữ liệu bẩm sinh, bao gồm: tính năng tìm kiếm web (`search`), truy xuất cơ sở dữ liệu (`database`), gọi API (`API`), hoặc thực thi mã lệnh (`code`) [Slide 20, Slide 24].\n4. **Memory (Bộ nhớ ghi/đọc):** Lưu trữ thông tin và trạng thái trong suốt quá trình agent thực hiện các bước [Slide 24].\n5. **Action (Hành động):** Các thao tác thực tế được tạo ra để tác động ra thế giới bên ngoài [Slide 24].\n\n### Vòng lặp vận hành (Agent Loop)\nCác thành phần trên phối hợp với nhau theo một vòng lặp khép kín: \n$$\\text{Goal} \\rightarrow \\text{Reasoning (Lập kế hoạch)} \\rightarrow \\text{Tools/Action (Thực thi)} \\rightarrow \\text{Quan sát kết quả} \\rightarrow \\text{Lặp lại cho đến khi xong}$$\n\n---\n*Tham khảo chi tiết toàn bộ mô hình và các mức độ phát triển của Agent tại [Slide 23] và [Slide 24].*",
+      "status": "PASS",
+      "reason": "Agent đã cung cấp bản tóm tắt phân mục rõ ràng, có đính kèm các trích dẫn slide (ví dụ: [Slide 23], [Slide 24]) tương ứng với nội dung nguồn, đáp ứng đúng tinh thần của yêu cầu test."
+    },
+    {
+      "id": "GS-044",
+      "category": "Happy path (8 case)",
+      "user_input": "Làm thế nào để quản lý chi phí API khi dùng LLM?",
+      "agent_output": "Để quản lý chi phí API khi sử dụng Large Language Model (LLM) hiệu quả, bạn cần nắm rõ cơ chế tính tiền và áp dụng các chiến lược tối ưu dựa trên kiến trúc của mô hình. Dưới đây là các phương pháp cốt lõi:\n\n### 1. Hiểu rõ cấu trúc chi phí (Input vs. Output Tokens)\nChi phí API được tính dựa trên số lượng **token** (mảnh chữ) mà bạn gửi đi (Input) và nhận về (Output) [Slide 27]. \n* **Vé vào (Input Tokens):** Rẻ hơn (ví dụ: $3 / 1 triệu token). Đây là phần bao gồm prompt, System Instruction, lịch sử chat và tài liệu đính kèm [Slide 27].\n* **Vé ra (Output Tokens):** Đắt gấp 3–5 lần (ví dụ: $15 / 1 triệu token). Đây là phần model tự sinh từng mảnh một, vừa chậm vừa tốn kém [Slide 27].\n👉 **Chiến lược:** Kiểm soát độ dài của **Output** (yêu cầu model trả lời ngắn gọn, đúng trọng tâm) chính là \"núm vặn\" lớn nhất giúp tiết kiệm chi phí [Slide 27].\n\n### 2. Chọn model theo \"Tầng\" (Tier) phù hợp với bài toán\nViệc sử dụng sai tầng mô hình là nguyên nhân lớn gây lãng phí [Slide 26]:\n* **Tầng 1 (Frontier - Đắt nhất):** Chỉ dùng cho các bài toán cực kỳ phức tạp, đòi hỏi suy luận nhiều bước [Slide 26]. \n* **Tầng 2 (Rẻ mà mạnh - Mặc định thử trước):** Dùng làm mặc định cho hầu hết công việc hằng ngày như viết lách, code, phân tích tài liệu dài [Slide 26].\n* **Tầng 3 (Self-host / Siêu rẻ):** Dùng khi cần kiểm soát dữ liệu nhạy cảm hoặc chạy với quy mô lớn (Scale) [Slide 26].\n👉 **Nguyên tắc:** Tránh hai lỗi đối xứng: Dùng mô hình Frontier cho việc đơn giản (phí tiền) hoặc cố dùng mô hình quá rẻ cho việc khó (kết quả tệ) [Slide 26].\n\n### 3. Quản lý \"Bàn làm việc\" (Context Management)\n* **Tránh \"nhét\" toàn bộ tài liệu:** Context quá dài không chỉ làm tăng chi phí input token mà còn khiến model dễ gặp hiện tượng \"quên phần giữa\" (*Lost in the Middle*) [Slide 14, Slide 16].\n* **Sử dụng RAG (Retrieval-Augmented Generation):** Thay vì đưa cả cuốn sách hoặc toàn bộ kho lưu trữ lên bàn làm việc, hãy trích xuất và chỉ đưa các đoạn dữ liệu thực sự liên quan vào prompt [Slide 16].\n\n### 4. Kiểm soát qua code/ứng dụng\n* Luôn theo dõi mục `usage` trong mỗi response trả về từ API để nắm được chính xác số lượng token đã tiêu thụ cho mỗi lần gọi [Slide 27].",
+      "status": "PASS",
+      "reason": "Agent đã thực hiện đúng yêu cầu: tóm tắt phân mục, cung cấp các link [Slide XX] có khả năng truy xuất nguồn và nội dung tóm tắt bám sát logic quản lý chi phí API."
+    }
+  ]
+}
